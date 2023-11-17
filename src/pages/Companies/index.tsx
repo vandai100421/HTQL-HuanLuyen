@@ -14,7 +14,7 @@ import { fetchCompaniesList } from "pages/Companies/store";
 
 const Companies = () => {
   useEffect(() => {
-    fetchCompaniesList();
+    fetchCompaniesList({ q: "" });
   }, []);
 
   const formFilter = useFormik({
@@ -141,7 +141,6 @@ const Companies = () => {
           )}
 
           <TableCustomers
-            // customerss={customersState.customerss.get()}
             onChangePage={handleChangePage}
             onClickEditCustomers={handleOpenEditCustomers}
             onConfirmDeleteCustomers={handleConfirmDeleteCustomers}

@@ -40,8 +40,8 @@ export const fetchCompaniesList = async (params?: GetCompaniesParams) => {
 
     const dataRes = await companyAPI.getAll(_params);
     companiesStore.set({
-      companies: [],
-      companiesTree: dataRes.data,
+      companies: dataRes.data.data,
+      companiesTree: [],
       // page: dataRes.data.result.page,
       // limit: dataRes.data.result.limit,
       // total: dataRes.data.result.totalDocs,

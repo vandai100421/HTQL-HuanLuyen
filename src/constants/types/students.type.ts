@@ -1,5 +1,6 @@
 import { CommonGetAllParams } from "constants/types/common.type";
 export type TypeStudents = {
+  id: string;
   maHocVien: string;
   tenHocVien: string;
   ngaySinh: string;
@@ -21,6 +22,7 @@ export type TypeEditStudents = {
 };
 
 export type TypeCreateStudents = {
+  id: string;
   maHocVien: string;
   tenHocVien: string;
   ngaySinh: string;
@@ -29,3 +31,4 @@ export type TypeCreateStudents = {
   queQuan: string;
   soDienThoai: string;
 };
+
