@@ -23,7 +23,7 @@ const TableStudents: FC<Props> = ({
     () => [
       {
         title: "Mã",
-        dataIndex: "maHocVien",
+        dataIndex: "id",
       },
       {
         title: "Họ và tên",
@@ -53,18 +53,22 @@ const TableStudents: FC<Props> = ({
       },
       {
         title: "Thao tác",
-        render: (_, customers: TypeStudents) => (
+        render: (_, students: TypeStudents) => (
           <>
             <Space direction="horizontal">
               <Button
                 size="small"
                 type="link"
-                onClick={() => onClickEdit(customers)}
+                onClick={() => {
+                  console.log(students);
+                  
+                  onClickEdit(students);
+                }}
                 icon={<EditOutlined />}
               />
               <Popconfirm
-                title="Xóa khách hàng này?"
-                onConfirm={() => onConfirmDelete(customers.maHocVien)}
+                title="Xóa học viên này?"
+                onConfirm={() => onConfirmDelete(students.id)}
               >
                 <Button
                   size="small"

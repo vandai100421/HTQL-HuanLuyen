@@ -23,7 +23,7 @@ const Students = () => {
 
   const formFilter = useFormik({
     initialValues: {
-      tenHocVien: "",
+      q: "",
       limit: 10,
       page: 1,
     },
@@ -62,15 +62,15 @@ const Students = () => {
     useState<boolean>(false);
   const [studentsSelected, setStudentsSelected] = useState<TypeStudents>();
   const [editStudentsError, setEditStudentsError] = useState<string>("");
-  const handleOpenEditCustomers = (customers: TypeStudents) => {
-    setStudentsSelected(customers);
+  const handleOpenEditCustomers = (student: TypeStudents) => {
+    setStudentsSelected(student);
     setVisibleEditStudents(true);
   };
 
-  const handleSubmitEditCustomers = async (data: TypeEditCustomers) => {
+  const handleSubmitEditCustomers = async (data: TypeCreateStudents) => {
     try {
       if (!studentsSelected) return;
-      // await customersApi.update(data);
+      await studentAPI.update(data.id, data);
       setEditStudentsError("");
       message.success("Cập nhật học viên thành công.");
       formFilter.submitForm();
@@ -83,7 +83,7 @@ const Students = () => {
   // start delete
   const handleConfirmDeleteCustomers = async (id: string) => {
     try {
-      // await customersApi.delete(id);
+      await studentAPI.delete(id);
       message.success("Xóa học viên thành công");
       const params = {
         ...(formFilter.values as any),
@@ -123,8 +123,8 @@ const Students = () => {
               <Input
                 placeholder="Tên học viên"
                 suffix={<SearchOutlined />}
-                name="tenHocVien"
-                value={formFilter.values.tenHocVien}
+                name="q"
+                value={formFilter.values.q}
                 onChange={formFilter.handleChange}
                 allowClear
               />

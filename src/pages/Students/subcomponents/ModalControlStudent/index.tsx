@@ -42,6 +42,8 @@ const ModalControlStudent: FC<Props> = ({
 }) => {
   const formControlStudent = useFormik({
     initialValues: {
+      id: "",
+      maHocVien: "",
       tenHocVien: "",
       gioiTinh: 0,
       donViId: 1,
@@ -62,14 +64,27 @@ const ModalControlStudent: FC<Props> = ({
   };
 
   const handleNgaySinh = (data: any, dateStrings: string) => {
-    formControlStudent.setFieldValue("ngaySinh", dateStrings);
+    const timeData = moment(data).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+    console.log(timeData);
+
+    formControlStudent.setFieldValue("ngaySinh", timeData);
   };
 
   useEffect(() => {
     if (visible && students) {
-      const { tenHocVien, gioiTinh, ngaySinh, queQuan, soDienThoai, donViId } =
-        students;
+      const {
+        id,
+        maHocVien,
+        tenHocVien,
+        gioiTinh,
+        ngaySinh,
+        queQuan,
+        soDienThoai,
+        donViId,
+      } = students;
       formControlStudent.setValues({
+        id,
+        maHocVien,
         tenHocVien,
         gioiTinh,
         ngaySinh,

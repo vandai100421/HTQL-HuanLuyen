@@ -3,6 +3,7 @@ import { useHookstate } from "@hookstate/core";
 import { Button, Popconfirm, Space, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
 import { TypeCustomers } from "constants/types/customers.type";
+import companiesStore from "pages/Companies/store";
 import customersStore from "pages/Customers/store";
 import { FC, useMemo } from "react";
 
@@ -17,21 +18,21 @@ const TableCustomers: FC<Props> = ({
   onClickEditCustomers,
   onConfirmDeleteCustomers,
 }) => {
-  const customersState = useHookstate(customersStore);
+  const companiesState = useHookstate(companiesStore);
 
   const columns: ColumnsType<any> = useMemo(
     () => [
       {
-        title: "Mã khách hàng",
+        title: "Mã",
         dataIndex: "id",
       },
       {
-        title: "Tên khách hàng",
-        dataIndex: "name",
+        title: "Tên Đơn vị",
+        dataIndex: "tenDonVi",
       },
       {
-        title: "Số điện thoại",
-        dataIndex: "phone",
+        title: "Loại đơn vị",
+        dataIndex: "loaDonVi",
       },
       {
         title: "Email",
@@ -49,7 +50,7 @@ const TableCustomers: FC<Props> = ({
                 icon={<EditOutlined />}
               />
               <Popconfirm
-                title="Xóa khách hàng này?"
+                title="Xóa đơn vị này?"
                 onConfirm={() => onConfirmDeleteCustomers(customers.id)}
               >
                 <Button
@@ -73,15 +74,15 @@ const TableCustomers: FC<Props> = ({
         columns={columns}
         size="small"
         bordered
-        dataSource={customersState.customers.get()}
+        dataSource={companiesState.companies.get()}
         pagination={{
-          // pageSize: customersState.limit.get(),
-          // current: customersState.page.get(),
-          // total: customersState.total.get(),
+          // pageSize: companiesState.limit.get(),
+          // current: companiesState.page.get(),
+          // total: companiesState.total.get(),
           hideOnSinglePage: true,
           onChange: onChangePage,
         }}
-        loading={customersState.isLoadingGetAllCustomers.get()}
+        loading={companiesState.isLoadingGetAllCompanies.get()}
       />
     </div>
   );

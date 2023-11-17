@@ -17,4 +17,15 @@ export const studentAPI = {
       data,
     });
   },
+  update: (id: string, data: TypeCreateStudents) => {
+    return request("/HocVien/" + id, {
+      method: "PUT",
+      data,
+    });
+  },
+  delete: (id: string) => {
+    return request("/HocVien/" + id, {
+      method: "DELETE",
+    });
+  },
 };
