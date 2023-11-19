@@ -1,12 +1,12 @@
 import { CommonGetAllParams } from "constants/types/common.type";
 export type TypeCompanies = {
-  maHocVien: string;
-  tenHocVien: string;
-  ngaySinh: string;
-  gioiTinh: number;
+  id: number;
+  tenDonVi: string;
+  ngayThanhLap: string;
+  ngayGiaiTan: string;
   donViId: number;
-  queQuan: string;
-  soDienThoai: string;
+  loaiDonViId: number;
+  trangThai: number;
 };
 
 export type GetCompaniesParams = CommonGetAllParams & {
@@ -15,14 +15,10 @@ export type GetCompaniesParams = CommonGetAllParams & {
 
 export type TypeEditCompanies = {
   id: number;
-  name: string;
-  phone: string;
-  email: string;
-};
-
-export type TypeCreateCompanies = {
-  id: number;
-  name: string;
-  phone: string;
-  email: string;
+  tenDonVi: string;
+  ngayThanhLap: string;
+  ngayGiaiTan: string;
+  donViId: number;
+  loaiDonViId: number;
+  trangThai: number;
 };

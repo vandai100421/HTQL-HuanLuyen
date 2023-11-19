@@ -65,8 +65,6 @@ const ModalControlStudent: FC<Props> = ({
 
   const handleNgaySinh = (data: any, dateStrings: string) => {
     const timeData = moment(data).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
-    console.log(timeData);
-
     formControlStudent.setFieldValue("ngaySinh", timeData);
   };
 

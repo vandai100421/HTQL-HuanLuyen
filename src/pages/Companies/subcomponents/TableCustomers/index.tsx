@@ -2,6 +2,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useHookstate } from "@hookstate/core";
 import { Button, Popconfirm, Space, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
+import { TypeCompanies, TypeEditCompanies } from "constants/types/companies.type";
 import { TypeCustomers } from "constants/types/customers.type";
 import companiesStore from "pages/Companies/store";
 import customersStore from "pages/Customers/store";
@@ -9,7 +10,7 @@ import { FC, useMemo } from "react";
 
 type Props = {
   onChangePage: (page: number, pageSize: number) => void;
-  onClickEditCustomers: (customers: TypeCustomers) => void;
+  onClickEditCustomers: (customers: TypeEditCompanies) => void;
   onConfirmDeleteCustomers: (id: number) => void;
 };
 
@@ -32,7 +33,7 @@ const TableCustomers: FC<Props> = ({
       },
       {
         title: "Loại đơn vị",
-        dataIndex: "loaDonVi",
+        dataIndex: "loaiDonViId",
       },
       {
         title: "Email",
@@ -40,7 +41,7 @@ const TableCustomers: FC<Props> = ({
       },
       {
         title: "Thao tác",
-        render: (_, customers: TypeCustomers) => (
+        render: (_, customers: TypeCompanies) => (
           <>
             <Space direction="horizontal">
               <Button

@@ -1,53 +1,26 @@
-import { Alert, Form, Input, Modal, Space, Switch, TreeSelect } from "antd";
+import { useHookstate } from "@hookstate/core";
+import { Alert, DatePicker, Form, Input, Modal, TreeSelect } from "antd";
+import { TypeCompanies } from "constants/types/companies.type";
 import { TypeCustomers } from "constants/types/customers.type";
 import { useFormik } from "formik";
+import moment from "moment";
+import companiesStore from "pages/Companies/store";
 import { FC, useEffect, useState } from "react";
 import * as Yup from "yup";
 
-const treeData = [
-  {
-    value: "parent 1",
-    title: "parent 1",
-    children: [
-      {
-        value: "parent 1-0",
-        title: "parent 1-0",
-        children: [
-          {
-            value: "leaf1",
-            title: "leaf1",
-          },
-          {
-            value: "leaf2",
-            title: "leaf2",
-          },
-        ],
-      },
-      {
-        value: "parent 1-1",
-        title: "parent 1-1",
-        children: [
-          {
-            value: "leaf3",
-            title: <b style={{ color: "#08c" }}>leaf3</b>,
-          },
-        ],
-      },
-    ],
-  },
-];
+const { RangePicker } = DatePicker;
 
 type Props = {
   visible?: boolean;
   onCancel: () => void;
-  customers?: TypeCustomers;
+  customers?: TypeCompanies;
   onSubmit: (data: any) => void;
   error?: string;
   okText: string;
 };
 
 const schemaEditDishType = Yup.object().shape({
-  name: Yup.string().required("Tên danh mục không được để trống."),
+  tenDonVi: Yup.string().required("Tên đơn vị không được để trống."),
 });
 
 const ModalControlCustomers: FC<Props> = ({
@@ -58,12 +31,15 @@ const ModalControlCustomers: FC<Props> = ({
   error,
   okText,
 }) => {
-  const formControlCustomers = useFormik({
+  const formControl = useFormik({
     initialValues: {
       id: 0,
-      name: "",
-      phone: "",
-      email: "",
+      tenDonVi: "",
+      ngayThanhLap: "",
+      ngayGiaiTan: "",
+      donViId: 1,
+      loaiDonViId: 0,
+      trangThai: 0,
     },
     validationSchema: schemaEditDishType,
     onSubmit: (data) => {
@@ -71,28 +47,44 @@ const ModalControlCustomers: FC<Props> = ({
     },
   });
 
-  const [treeLine, setTreeLine] = useState(false);
-  const [showLeafIcon, setShowLeafIcon] = useState(false);
+  const companiesState = useHookstate(companiesStore);
 
-  const onTreeExpand = (expandedKeys: any) => {
-    console.log(expandedKeys);
+  const changeCompany = (newValue: string) => {
+    formControl.setFieldValue("donViId", newValue);
+  };
+
+  const changeTime = (value: any, dateStrings: string) => {
+    const ngayThanhLap = moment(value).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+    formControl.setFieldValue("ngayThanhLap", ngayThanhLap);
+    formControl.setFieldValue("ngayGiaiTan", ngayThanhLap);
   };
 
   useEffect(() => {
     if (visible && customers) {
-      const { id, name, phone, email } = customers;
-      formControlCustomers.setValues({
+      const {
         id,
-        name,
-        phone,
-        email,
+        tenDonVi,
+        ngayThanhLap,
+        ngayGiaiTan,
+        donViId,
+        loaiDonViId,
+        trangThai,
+      } = customers;
+      formControl.setValues({
+        id,
+        tenDonVi,
+        ngayThanhLap,
+        ngayGiaiTan,
+        donViId,
+        loaiDonViId,
+        trangThai,
       });
     }
   }, [customers, visible]);
 
   // reset form after close
   useEffect(() => {
-    if (!visible) formControlCustomers.resetForm();
+    if (!visible) formControl.resetForm();
   }, [visible]);
 
   return (
@@ -100,60 +92,60 @@ const ModalControlCustomers: FC<Props> = ({
       visible={visible}
       onCancel={onCancel}
       okText={okText}
-      onOk={formControlCustomers.submitForm}
-      confirmLoading={formControlCustomers.isSubmitting}
+      onOk={formControl.submitForm}
+      confirmLoading={formControl.isSubmitting}
     >
       {error && (
         <Alert message={error} type="error" style={{ marginBottom: 16 }} />
       )}
       <Form layout="vertical">
-        <Space direction="vertical">
-          <TreeSelect
-            treeLine={treeLine && { showLeafIcon }}
-            style={{ width: 300 }}
-            treeData={treeData}
-            onTreeExpand={onTreeExpand}
-          />
-        </Space>
         <Form.Item
-          label="Tên khách hàng"
+          label="Tên đơn vị"
           validateStatus={
-            formControlCustomers.errors.name &&
-            formControlCustomers.touched.name
+            formControl.errors.tenDonVi && formControl.touched.tenDonVi
               ? "error"
               : ""
           }
           help={
-            formControlCustomers.errors.name &&
-            formControlCustomers.touched.name
-              ? formControlCustomers.errors.name
+            formControl.errors.tenDonVi && formControl.touched.tenDonVi
+              ? formControl.errors.tenDonVi
               : null
           }
         >
           <Input
-            name="name"
-            placeholder="Nhập tên khách hàng"
-            value={formControlCustomers.values.name}
-            onChange={formControlCustomers.handleChange}
-            onBlur={formControlCustomers.handleBlur}
+            name="tenDonVi"
+            placeholder="Nhập tên đơn vị"
+            value={formControl.values.tenDonVi}
+            onChange={formControl.handleChange}
+            onBlur={formControl.handleBlur}
           />
         </Form.Item>
-        <Form.Item label="Số điện thoại">
+        <Form.Item label="Đơn vị cấp trên">
+          <TreeSelect
+            style={{ width: "100%" }}
+            value={formControl.values.donViId.toString()}
+            dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+            treeData={companiesState.companiesTree.get()}
+            placeholder="Chọn đơn vị"
+            treeDefaultExpandAll
+            onChange={changeCompany}
+          />
+        </Form.Item>
+        <Form.Item label="Loại đơn vị">
           <Input
-            name="phone"
+            name="loaiDonViId"
             placeholder="Nhập số điện thoại khách hàng"
-            value={formControlCustomers.values.phone}
-            onChange={formControlCustomers.handleChange}
-            onBlur={formControlCustomers.handleBlur}
+            value={formControl.values.loaiDonViId}
+            onChange={formControl.handleChange}
+            onBlur={formControl.handleBlur}
           />
         </Form.Item>
-        <Form.Item label="Email">
-          <Input
-            name="email"
-            placeholder="Nhập email khách hàng"
-            value={formControlCustomers.values.email}
-            onChange={formControlCustomers.handleChange}
-            onBlur={formControlCustomers.handleBlur}
+        <Form.Item label="Ngày sinh" name="ngaySinh">
+          <DatePicker
+            showTime={{ showSecond: false }}
+            format="DD/MM/YYYY"
+            value={moment(formControl.values.ngayThanhLap, "DD/MM/YYYY")}
+            onChange={changeTime}
           />
         </Form.Item>
       </Form>

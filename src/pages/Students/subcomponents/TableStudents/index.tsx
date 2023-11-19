@@ -42,7 +42,7 @@ const TableStudents: FC<Props> = ({
         render: (value) => {
           return (
             <>
-              {value.gioiTinh === 1 ? (
+              {value.gioiTinh === 0 ? (
                 <Tag color="warning">Nữ</Tag>
               ) : (
                 <Tag color="success">Nam</Tag>
@@ -61,7 +61,7 @@ const TableStudents: FC<Props> = ({
                 type="link"
                 onClick={() => {
                   console.log(students);
-                  
+
                   onClickEdit(students);
                 }}
                 icon={<EditOutlined />}
