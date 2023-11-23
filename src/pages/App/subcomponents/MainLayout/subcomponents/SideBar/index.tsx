@@ -114,6 +114,17 @@ const menus: Array<MenuItem> = [
       },
     ],
   },
+  {
+    title: "Người dùng",
+    key: "user",
+    icon: <TeamOutlined />,
+    submenus: [
+      {
+        title: "Danh sách người dùng",
+        path: USER,
+      },
+    ],
+  },
 ];
 
 const SideBar = () => {

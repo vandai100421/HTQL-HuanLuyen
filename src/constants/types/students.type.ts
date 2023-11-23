@@ -8,6 +8,8 @@ export type TypeStudents = {
   donViId: number;
   queQuan: string;
   soDienThoai: string;
+  capBacId: number;
+  chucVuId: number;
 };
 
 export type GetStudentsParams = CommonGetAllParams & {
@@ -30,5 +32,6 @@ export type TypeCreateStudents = {
   donViId: number;
   queQuan: string;
   soDienThoai: string;
+  capBacId: number;
+  chucVuId: number;
 };
-
