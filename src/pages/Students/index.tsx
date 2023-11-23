@@ -48,12 +48,11 @@ const Students = () => {
   const handleSubmitAddStudent = async (data: TypeCreateStudents) => {
     try {
       await studentAPI.create(data);
-      setAddStudentsError("");
       message.success("Thêm mới học viên thành công.");
       formFilter.submitForm();
       setVisibleAddStudents(false);
     } catch (error: any) {
-      setAddStudentsError(error);
+      message.error("Lỗi khi thêm mới học viên");
     }
   };
 

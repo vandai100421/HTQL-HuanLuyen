@@ -124,18 +124,8 @@ const Users = () => {
         <Card bordered={false}>
           <CardTitle
             title="Quản lý người dùng"
-            subtitle="Tổng hợp người dùng trong hệ thống không bao gồm khách hàng"
+            subtitle="Tổng hợp người dùng trong hệ thống"
           />
-          {/* <Tabs
-            activeKey={formFilter.values.status}
-            onChange={changeFilterStatus}
-          >
-            <Tabs.TabPane tab="Tất cả" key="" />
-            <Tabs.TabPane tab="Đã kích hoạt" key="actived" />
-            <Tabs.TabPane tab="Chưa kích hoạt" key="unactived" />
-            <Tabs.TabPane tab="Đã khóa" key="locked" />
-            <Tabs.TabPane tab="Đã xóa" key="deleted" />
-          </Tabs> */}
           <div className={styles.filter}>
             <Space>
               <Input
@@ -146,38 +136,21 @@ const Users = () => {
                 onChange={formFilter.handleChange}
                 allowClear
               />
-              <Input
-                placeholder="Email"
-                suffix={<SearchOutlined />}
-                name="email"
-                value={formFilter.values.email}
-                onChange={formFilter.handleChange}
-                allowClear
-              />
-              <Input
-                placeholder="Số điện thoại"
-                suffix={<SearchOutlined />}
-                name="phone"
-                value={formFilter.values.phone}
-                onChange={formFilter.handleChange}
-                allowClear
-              />
+
               <Button type="primary" onClick={formFilter.submitForm}>
                 Tìm kiếm
               </Button>
             </Space>
           </div>
-          {formFilter.values.status !== "deleted" && (
-            <div className={styles.action}>
-              <Button
-                icon={<PlusOutlined />}
-                type="primary"
-                onClick={() => setVisibleAddUser(true)}
-              >
-                Tạo mới
-              </Button>
-            </div>
-          )}
+          <div className={styles.action}>
+            <Button
+              icon={<PlusOutlined />}
+              type="primary"
+              onClick={() => setVisibleAddUser(true)}
+            >
+              Tạo mới
+            </Button>
+          </div>
           <TableUser
             usersState={usersState}
             onChangePage={handleChangePage}

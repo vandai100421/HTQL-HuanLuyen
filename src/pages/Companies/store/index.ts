@@ -39,9 +39,8 @@ export const fetchCompaniesList = async (params?: GetCompaniesParams) => {
     };
 
     const dataRes = await companyAPI.getAll(_params);
-    companiesStore.set({
+    companiesStore.merge({
       companies: dataRes.data.data,
-      companiesTree: [],
       // page: dataRes.data.result.page,
       // limit: dataRes.data.result.limit,
       // total: dataRes.data.result.totalDocs,
@@ -60,8 +59,7 @@ export const fetchCompaniesTree = async () => {
 
     const companiesTree = convertDonVi(dataRes.data.data, null);
 
-    companiesStore.set({
-      companies: [],
+    companiesStore.merge({
       companiesTree: companiesTree,
       // page: dataRes.data.result.page,
       // limit: dataRes.data.result.limit,

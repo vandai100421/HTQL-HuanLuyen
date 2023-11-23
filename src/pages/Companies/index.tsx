@@ -10,20 +10,21 @@ import {
   TypeEditCustomers,
   TypeCustomers,
 } from "constants/types/customers.type";
-import { fetchCompaniesList } from "pages/Companies/store";
+import { fetchCompaniesList, fetchCompaniesTree } from "pages/Companies/store";
+import { TypeCompanies, TypeEditCompanies } from "constants/types/companies.type";
+import { companyAPI } from "apis/company";
 
 const Companies = () => {
   useEffect(() => {
     fetchCompaniesList({ q: "" });
+    fetchCompaniesTree();
   }, []);
 
   const formFilter = useFormik({
     initialValues: {
-      name: "",
       q: "",
-      status: "all",
-      start_time: null,
-      end_time: null,
+      limit: 10,
+      page: 1,
     },
     onSubmit: (data: any) => {
       fetchCompaniesList(data);
@@ -44,9 +45,9 @@ const Companies = () => {
     useState<boolean>(false);
   const [addCustomersError, setAddCustomersError] = useState<string>("");
 
-  const handleSubmitAddCustomers = async (data: TypeCreateCustomers) => {
+  const handleSubmitAddCustomers = async (data: TypeEditCompanies) => {
     try {
-      // await customersApi.create(data);
+      await companyAPI.create(data);
       setAddCustomersError("");
       message.success("Thêm mới nhóm người dùng thành công.");
       formFilter.submitForm();
@@ -59,17 +60,17 @@ const Companies = () => {
   // Edit Customers
   const [visibleEditCustomers, setVisibleEditCustomers] =
     useState<boolean>(false);
-  const [customersSelected, setcustomersSelected] = useState<TypeCustomers>();
+  const [customersSelected, setcustomersSelected] = useState<TypeCompanies>();
   const [editCustomersError, setEditCustomersError] = useState<string>("");
-  const handleOpenEditCustomers = (customers: TypeCustomers) => {
+  const handleOpenEditCustomers = (customers: TypeCompanies) => {
     setcustomersSelected(customers);
     setVisibleEditCustomers(true);
   };
 
-  const handleSubmitEditCustomers = async (data: TypeEditCustomers) => {
+  const handleSubmitEditCustomers = async (data: TypeEditCompanies) => {
     try {
       if (!customersSelected) return;
-      // await customersApi.update(data);
+      await companyAPI.update(data);
       setEditCustomersError("");
       message.success("Cập nhật danh mục thành công.");
       formFilter.submitForm();
@@ -119,8 +120,8 @@ const Companies = () => {
               <Input
                 placeholder="Tìm kiếm theo tên đơn vị"
                 suffix={<SearchOutlined />}
-                name="name"
-                value={formFilter.values.name}
+                name="q"
+                value={formFilter.values.q}
                 onChange={formFilter.handleChange}
                 allowClear
               />
@@ -129,16 +130,14 @@ const Companies = () => {
               </Button>
             </Space>
           </div>
-          {formFilter.values.status !== "deleted" && (
-            <Button
-              icon={<PlusOutlined />}
-              type="primary"
-              onClick={() => setVisibleAddCustomers(true)}
-              style={{ marginBottom: 16, float: "right" }}
-            >
-              Tạo mới
-            </Button>
-          )}
+          <Button
+            icon={<PlusOutlined />}
+            type="primary"
+            onClick={() => setVisibleAddCustomers(true)}
+            style={{ marginBottom: 16, float: "right" }}
+          >
+            Tạo mới
+          </Button>
 
           <TableCustomers
             onChangePage={handleChangePage}
