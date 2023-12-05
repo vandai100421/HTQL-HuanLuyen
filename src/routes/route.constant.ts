@@ -44,3 +44,5 @@ export const CASHES = "/cashes";
 
 export const COMPANIES = "/companies";
 export const STUDENTS = "/students";
+export const EQUIPMENTS = "/equipments";
+export const SCHEDULES = "/schedules";

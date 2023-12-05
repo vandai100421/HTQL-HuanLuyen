@@ -11,7 +11,10 @@ import {
   TypeCustomers,
 } from "constants/types/customers.type";
 import { fetchCompaniesList, fetchCompaniesTree } from "pages/Companies/store";
-import { TypeCompanies, TypeEditCompanies } from "constants/types/companies.type";
+import {
+  TypeCompanies,
+  TypeEditCompanies,
+} from "constants/types/companies.type";
 import { companyAPI } from "apis/company";
 
 const Companies = () => {

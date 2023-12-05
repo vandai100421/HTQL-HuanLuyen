@@ -7,6 +7,8 @@ import tableRoute from "pages/Table/route";
 import customersRoute from "pages/Customers/route";
 import companiesRoute from "pages/Companies/route";
 import studentsRoute from "pages/Students/route";
+import equipmentsRoute from "pages/Equipments/route";
+import schedulesRoute from "pages/Schedules/route";
 
 export default [
   dashboardRoute,
@@ -18,4 +20,6 @@ export default [
   customersRoute,
   companiesRoute,
   studentsRoute,
+  equipmentsRoute,
+  schedulesRoute,
 ];

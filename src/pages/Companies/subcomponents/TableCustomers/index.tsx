@@ -2,7 +2,10 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useHookstate } from "@hookstate/core";
 import { Button, Popconfirm, Space, Table } from "antd";
 import { ColumnsType } from "antd/lib/table";
-import { TypeCompanies, TypeEditCompanies } from "constants/types/companies.type";
+import {
+  TypeCompanies,
+  TypeEditCompanies,
+} from "constants/types/companies.type";
 import { TypeCustomers } from "constants/types/customers.type";
 import companiesStore from "pages/Companies/store";
 import customersStore from "pages/Customers/store";

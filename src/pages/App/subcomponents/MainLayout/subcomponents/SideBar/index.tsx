@@ -11,12 +11,12 @@ import styles from "pages/App/subcomponents/MainLayout/subcomponents/SideBar/sty
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import {
-  PERMISSION,
-  ROLE,
   USER,
   DEFAULT,
   COMPANIES,
   STUDENTS,
+  EQUIPMENTS,
+  SCHEDULES,
 } from "routes/route.constant";
 
 type SubMenuItem = {
@@ -78,20 +78,12 @@ const menus: Array<MenuItem> = [
   },
   {
     title: "Trang thiết bị",
-    key: "machine",
+    key: "equipment",
     icon: <BoxPlotOutlined />,
     submenus: [
       {
         title: "Danh sách trang thiết bị",
-        path: USER,
-      },
-      {
-        title: "Danh sách trang thiết bị",
-        path: ROLE,
-      },
-      {
-        title: "Danh sách quyền",
-        path: PERMISSION,
+        path: EQUIPMENTS,
       },
     ],
   },
@@ -101,16 +93,8 @@ const menus: Array<MenuItem> = [
     icon: <ScheduleOutlined />,
     submenus: [
       {
-        title: "Danh sách người dùng",
-        path: USER,
-      },
-      {
-        title: "Danh sách nhóm",
-        path: ROLE,
-      },
-      {
-        title: "Danh sách quyền",
-        path: PERMISSION,
+        title: "Danh sách kế hoạch",
+        path: SCHEDULES,
       },
     ],
   },

@@ -116,6 +116,8 @@ const ModalControlStudent: FC<Props> = ({
     fetchCommon();
   }, [students, visible]);
 
+  console.log(formControlStudent.values.capBacId.toString());
+
   // reset form after close
   useEffect(() => {
     if (!visible) formControlStudent.resetForm();
