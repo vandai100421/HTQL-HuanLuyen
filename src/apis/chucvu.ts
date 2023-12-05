@@ -5,5 +5,5 @@ export const chucVuAPI = {
     return request("/ChucVu", {
       method: "GET",
     });
-  }, 
+  },
 };

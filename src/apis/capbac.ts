@@ -5,5 +5,5 @@ export const capBacAPI = {
     return request("/CapBac", {
       method: "GET",
     });
-  }, 
+  },
 };

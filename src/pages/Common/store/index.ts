@@ -6,7 +6,7 @@ import { TypeChucVu } from "constants/types/chucvu.type";
 
 type CommonState = {
   capBacs: Array<TypeCapBac>;
-  chucVus: Array<TypeChucVu>
+  chucVus: Array<TypeChucVu>;
   isLoading: boolean;
 };
 

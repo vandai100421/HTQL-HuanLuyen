@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import TableComponent from "pages/Users/subcomponents/Table";
+import TableComponent from "pages/Equipments/subcomponents/Table";
 import { Button, Card, Input, Space, message } from "antd";
 import CardTitle from "components/CardTitle";
-import ModalControl from "pages/Users/subcomponents/ModalControl";
+import ModalControl from "pages/Equipments/subcomponents/ModalControl";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 
-const Users = () => {
+const Equipments = () => {
   // Filter
 
   const formFilter = useFormik({
@@ -64,7 +64,10 @@ const Users = () => {
         okText="Sửa"
       />
       <Card>
-        <CardTitle title="Người Dùng" subtitle="Thông tin về người dùng" />
+        <CardTitle
+          title="Trang Thiết Bị"
+          subtitle="Thông tin về trang thiết bị"
+        />
 
         <div>
           <Space>
@@ -101,4 +104,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default Equipments;
