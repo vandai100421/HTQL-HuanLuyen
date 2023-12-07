@@ -2,75 +2,62 @@ import React, { FC } from "react";
 import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import table from "antd/lib/table";
+import { TypeEquipment } from "constants/types/equipment.type";
+import { getTinhTrang } from "pages/Common/store";
+import { useHookstate } from "@hookstate/core";
+import equipmentStore from "pages/Equipments/store";
 
 type Props = {
+  changePage: (page: number, pageSize: number) => void;
   handleSelectItem: (data: any) => void;
   handleConfirmDeleteItem: (id: number) => void;
 };
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
-
 const TableComponent: FC<Props> = ({
+  changePage,
   handleConfirmDeleteItem,
   handleSelectItem,
 }) => {
-  const columns: ColumnsType<DataType> = [
+  const equipmentState = useHookstate(equipmentStore);
+
+  const columns: ColumnsType<TypeEquipment> = [
     {
-      title: "Name",
-      dataIndex: "name",
+      title: "Tên trang thiết bị",
+      dataIndex: "tenTTB",
       key: "name",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
-    },
-    {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
+      title: "Tình trạng",
+      dataIndex: "tinhTrang",
+      render: (value: number) => (
+        <Tag color={value === 1 ? "success" : "warning"}>
+          {getTinhTrang(value)}{" "}
+        </Tag>
       ),
     },
     {
+      title: "Địa điểm",
+      dataIndex: "diaDiem",
+      key: "address",
+    },
+    {
+      title: "Tên đơn vị",
+      dataIndex: "tenDonVi",
+    },
+    {
       title: "Thao tác",
-      render: (_, item: any) => (
+      render: (_, item: TypeEquipment) => (
         <>
           <Space direction="horizontal">
             <Button
               size="small"
               type="link"
-              onClick={() => handleSelectItem(table)}
-              icon={<EditOutlined />}
+              onClick={() => handleSelectItem(item)}
+              icon={<EditOutlined style={{ color: "orange" }} />}
             />
             <Popconfirm
-              title="Xóa item nay?"
+              title="Xóa trang thiết bị này?"
               onConfirm={() => handleConfirmDeleteItem(item.id)}
             >
               <Button
@@ -86,32 +73,20 @@ const TableComponent: FC<Props> = ({
     },
   ];
 
-  const data: DataType[] = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-      tags: ["loser"],
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-      tags: ["cool", "teacher"],
-    },
-  ];
   return (
     <>
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={equipmentState.equipments.get()}
+        loading={equipmentState.isLoadingGetAllEquipment.get()}
+        pagination={{
+          pageSize: equipmentState.limit.get(),
+          current: equipmentState.page.get(),
+          total: equipmentState.total.get(),
+          hideOnSinglePage: true,
+          onChange: changePage,
+        }}
+      />
     </>
   );
 };

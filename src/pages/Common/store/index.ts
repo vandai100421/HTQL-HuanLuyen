@@ -35,4 +35,10 @@ export const fetchCommon = async () => {
   }
 };
 
+export const getTinhTrang = (input: number) => {
+  if (input === 1) return "Đang sử dụng";
+  else if (input === 2) return "Lưu kho";
+  return "Chưa xác định";
+};
+
 export default commonStore;
