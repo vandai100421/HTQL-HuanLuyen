@@ -1,52 +1,90 @@
-import React, { useState } from "react";
-import TableComponent from "pages/Users/subcomponents/Table";
+import React, { useEffect, useState } from "react";
+import TableComponent from "./subcomponents/Table";
 import { Button, Card, Input, Space, message } from "antd";
 import CardTitle from "components/CardTitle";
-import ModalControl from "pages/Users/subcomponents/ModalControl";
+import ModalControl from "./subcomponents/ModalControl";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
+import { getAllUser } from "./store";
+import { CommonGetAllParams } from "constants/types/common.type";
+import { fetchCompaniesTree } from "pages/Companies/store";
+import { userApi } from "apis/user";
+import { TypeEditUser, TypeUser } from "constants/types/user.type";
 
-const Users = () => {
+const User = () => {
   // Filter
+  useEffect(() => {
+    getAllUser();
+    fetchCompaniesTree();
+  }, []);
 
-  const formFilter = useFormik({
+  const formFilter = useFormik<CommonGetAllParams>({
     initialValues: {
-      name: "",
-      status: "all",
-      start_time: null,
-      end_time: null,
+      q: "",
+      page: 1,
+      limit: 10,
     },
-    onSubmit: (data: any) => {
-      console.log(data);
+    onSubmit: (data: CommonGetAllParams) => {
+      getAllUser(data);
     },
   });
 
   // Add
   const [visibleModalAdd, setVisibleModalAdd] = useState<boolean>(false);
-  const handleSubmitModalAdd = async (data: any) => {
-    console.log(data);
-    setVisibleModalAdd(false);
+  const handleSubmitModalAdd = async (data: TypeEditUser) => {
+    try {
+      await userApi.create(data);
+      console.log(data);
+      setVisibleModalAdd(false);
+      getAllUser();
+      message.success("Thêm mới dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalAdd(false);
+      message.error("Thêm mới dữ liệu thất bại");
+    }
   };
 
   // Edit
   const [visibleModalEdit, setVisibleModalEdit] = useState<boolean>(false);
-  const [itemSeleted, setItemSelected] = useState<any>();
+  const [itemSeleted, setItemSelected] = useState<TypeUser>();
 
-  const handleSelectItem = (table: any) => {
-    setItemSelected(table);
+  const handleSelectItem = (data: TypeUser) => {
+    setItemSelected(data);
     setVisibleModalEdit(true);
   };
 
-  const handleSubmitModalEdit = async (data: any) => {
-    console.log(data);
-    setVisibleModalEdit(false);
+  const handleSubmitModalEdit = async (data: TypeEditUser) => {
+    try {
+      await userApi.update(data);
+      console.log(data);
+      setVisibleModalEdit(false);
+      getAllUser();
+      message.success("Cập nhật dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalEdit(false);
+      message.error("Cập nhật dữ liệu thất bại");
+    }
   };
 
   // start delete
   const handleConfirmDeleteItem = async (id: number) => {
-    console.log(id);
+    try {
+      await userApi.delete(id);
+      getAllUser();
+      message.success("Xóa dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalEdit(false);
+      message.error("Xóa dữ liệu thất bại");
+    }
   };
   // end delete
+
+  const handleChangePage = (page: number, pageSize: number) => {
+    getAllUser({
+      page: page,
+      limit: pageSize,
+    });
+  };
 
   return (
     <>
@@ -64,16 +102,20 @@ const Users = () => {
         okText="Sửa"
       />
       <Card>
-        <CardTitle title="Người Dùng" subtitle="Thông tin về người dùng" />
+        <CardTitle
+          title="Trang Thiết Bị"
+          subtitle="Thông tin về trang thiết bị"
+        />
 
         <div>
           <Space>
             <Input
               placeholder="Tìm kiếm theo tên"
               suffix={<SearchOutlined />}
-              name="name"
-              value={formFilter.values.name}
+              name="q"
+              value={formFilter.values.q}
               onChange={formFilter.handleChange}
+              onPressEnter={formFilter.submitForm}
               allowClear
             />
             <Button type="primary" onClick={formFilter.submitForm}>
@@ -92,6 +134,7 @@ const Users = () => {
 
         <div>
           <TableComponent
+            changePage={handleChangePage}
             handleSelectItem={handleSelectItem}
             handleConfirmDeleteItem={handleConfirmDeleteItem}
           />
@@ -101,4 +144,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default User;

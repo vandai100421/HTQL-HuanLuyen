@@ -2,13 +2,13 @@ import { hookstate } from "@hookstate/core";
 import { message } from "antd";
 import { statisticApi } from "apis/statisticApi";
 import { TypeDish } from "constants/types/cash.type";
-import { User } from "constants/types/user.type";
+import { TypeUser } from "constants/types/user.type";
 
 type TypeDashBoardState = {
   customerNum: number;
   topDishes: Array<TypeDish>;
   today_revenue: number;
-  staffFrequency: Array<User>;
+  staffFrequency: Array<TypeUser>;
 };
 
 const initialValues: TypeDashBoardState = {

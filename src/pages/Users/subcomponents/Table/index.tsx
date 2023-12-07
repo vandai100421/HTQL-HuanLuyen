@@ -1,76 +1,65 @@
 import React, { FC } from "react";
 import { Button, Popconfirm, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import table from "antd/lib/table";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ExclamationOutlined,
+} from "@ant-design/icons";
+import { TypeUser } from "constants/types/user.type";
+import { useHookstate } from "@hookstate/core";
+import userStore from "../../store";
 
 type Props = {
+  changePage: (page: number, pageSize: number) => void;
   handleSelectItem: (data: any) => void;
   handleConfirmDeleteItem: (id: number) => void;
 };
 
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-  tags: string[];
-}
-
 const TableComponent: FC<Props> = ({
+  changePage,
   handleConfirmDeleteItem,
   handleSelectItem,
 }) => {
-  const columns: ColumnsType<DataType> = [
+  const userState = useHookstate(userStore);
+
+  const columns: ColumnsType<TypeUser> = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "Họ và tên",
+      dataIndex: "hoTen",
       render: (text) => <a>{text}</a>,
     },
     {
-      title: "Age",
-      dataIndex: "age",
-      key: "age",
+      title: "Email",
+      dataIndex: "email",
+      render: (text) => <a>{text}</a>,
     },
     {
-      title: "Address",
-      dataIndex: "address",
-      key: "address",
-    },
-    {
-      title: "Tags",
-      key: "tags",
-      dataIndex: "tags",
-      render: (_, { tags }) => (
-        <>
-          {tags.map((tag) => {
-            let color = tag.length > 5 ? "geekblue" : "green";
-            if (tag === "loser") {
-              color = "volcano";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
+      title: "Vai trò",
+      dataIndex: "vaiTro",
+      render: (value: number) => (
+        <Tag color={value === 1 ? "success" : "warning"}>
+          {value === 1 ? "Quản trị viên" : "Người dùng"}
+        </Tag>
       ),
     },
     {
+      title: "Tên đơn vị",
+      dataIndex: "tenDonVi",
+    },
+    {
       title: "Thao tác",
-      render: (_, item: any) => (
+      render: (_, item: TypeUser) => (
         <>
           <Space direction="horizontal">
             <Button
               size="small"
               type="link"
-              onClick={() => handleSelectItem(table)}
-              icon={<EditOutlined />}
+              onClick={() => handleSelectItem(item)}
+              icon={<EditOutlined style={{ color: "orange" }} />}
             />
             <Popconfirm
-              title="Xóa item nay?"
+              title="Xóa người dùng này?"
               onConfirm={() => handleConfirmDeleteItem(item.id)}
             >
               <Button
@@ -80,38 +69,37 @@ const TableComponent: FC<Props> = ({
                 icon={<DeleteOutlined />}
               />
             </Popconfirm>
+            <Popconfirm
+              title="Bạn muốn đổi mật khẩu?"
+              onConfirm={() => console.log(item.id)}
+            >
+              <Button
+                size="small"
+                type="link"
+                danger
+                icon={<ExclamationOutlined style={{ color: "blue" }} />}
+              />
+            </Popconfirm>
           </Space>
         </>
       ),
     },
   ];
 
-  const data: DataType[] = [
-    {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address: "New York No. 1 Lake Park",
-      tags: ["nice", "developer"],
-    },
-    {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
-      tags: ["loser"],
-    },
-    {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
-      tags: ["cool", "teacher"],
-    },
-  ];
   return (
     <>
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={userState.users.get()}
+        loading={userState.isLoadingGetAllUser.get()}
+        pagination={{
+          pageSize: userState.limit.get(),
+          current: userState.page.get(),
+          total: userState.total.get(),
+          hideOnSinglePage: true,
+          onChange: changePage,
+        }}
+      />
     </>
   );
 };

@@ -5,8 +5,7 @@ import CardTitle from "components/CardTitle";
 import ModalControl from "pages/Equipments/subcomponents/ModalControl";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
-import { useHookstate } from "@hookstate/core";
-import equipmentStore, { getAllEquipment } from "./store";
+import { getAllEquipment } from "./store";
 import { CommonGetAllParams } from "constants/types/common.type";
 import { fetchCompaniesTree } from "pages/Companies/store";
 import { equipmentAPI } from "apis/equipment";
@@ -17,8 +16,6 @@ import {
 
 const Equipments = () => {
   // Filter
-  const equipmentState = useHookstate(equipmentStore);
-
   useEffect(() => {
     getAllEquipment();
     fetchCompaniesTree();
