@@ -1,6 +1,7 @@
 export type CommonGetAllParams = {
   page?: number;
   limit?: number;
+  q?: string;
 };
 
 export type Status = "actived" | "unactive" | "locked" | "deleted";
