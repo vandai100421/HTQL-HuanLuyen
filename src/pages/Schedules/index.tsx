@@ -1,52 +1,89 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TableComponent from "pages/Schedules/subcomponents/Table";
 import { Button, Card, Input, Space, message } from "antd";
 import CardTitle from "components/CardTitle";
 import ModalControl from "pages/Schedules/subcomponents/ModalControl";
 import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
+import { getAllSchedule } from "./store";
+import { scheduleApi } from "apis/schedule";
+import { TypeEditSchedule, TypeSchedule } from "constants/types/schedule.type";
+import { CommonGetAllParams } from "constants/types/common.type";
+import { fetchCompaniesTree } from "pages/Companies/store";
 
 const Schedules = () => {
   // Filter
+  useEffect(() => {
+    getAllSchedule();
+    fetchCompaniesTree();
+  }, []);
 
-  const formFilter = useFormik({
+  const formFilter = useFormik<CommonGetAllParams>({
     initialValues: {
-      name: "",
-      status: "all",
-      start_time: null,
-      end_time: null,
+      q: "",
+      page: 1,
+      limit: 10,
     },
-    onSubmit: (data: any) => {
-      console.log(data);
+    onSubmit: (data: CommonGetAllParams) => {
+      getAllSchedule(data);
     },
   });
 
   // Add
   const [visibleModalAdd, setVisibleModalAdd] = useState<boolean>(false);
-  const handleSubmitModalAdd = async (data: any) => {
-    console.log(data);
-    setVisibleModalAdd(false);
+  const handleSubmitModalAdd = async (data: FormData) => {
+    try {
+      await scheduleApi.create(data);
+      setVisibleModalAdd(false);
+      getAllSchedule();
+      message.success("Thêm mới dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalAdd(false);
+      message.error("Thêm mới dữ liệu thất bại");
+    }
   };
 
   // Edit
   const [visibleModalEdit, setVisibleModalEdit] = useState<boolean>(false);
-  const [itemSeleted, setItemSelected] = useState<any>();
+  const [itemSeleted, setItemSelected] = useState<TypeSchedule>();
 
-  const handleSelectItem = (table: any) => {
-    setItemSelected(table);
+  const handleSelectItem = (data: TypeSchedule) => {
+    setItemSelected(data);
     setVisibleModalEdit(true);
   };
 
-  const handleSubmitModalEdit = async (data: any) => {
-    console.log(data);
-    setVisibleModalEdit(false);
+  const handleSubmitModalEdit = async (data: FormData) => {
+    try {
+      await scheduleApi.update(data);
+      console.log(data);
+      setVisibleModalEdit(false);
+      getAllSchedule();
+      message.success("Cập nhật dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalEdit(false);
+      message.error("Cập nhật dữ liệu thất bại");
+    }
   };
 
   // start delete
   const handleConfirmDeleteItem = async (id: number) => {
-    console.log(id);
+    try {
+      await scheduleApi.delete(id);
+      getAllSchedule();
+      message.success("Xóa dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalEdit(false);
+      message.error("Xóa dữ liệu thất bại");
+    }
   };
   // end delete
+
+  const handleChangePage = (page: number, pageSize: number) => {
+    getAllSchedule({
+      page: page,
+      limit: pageSize,
+    });
+  };
 
   return (
     <>
@@ -74,9 +111,10 @@ const Schedules = () => {
             <Input
               placeholder="Tìm kiếm theo tên"
               suffix={<SearchOutlined />}
-              name="name"
-              value={formFilter.values.name}
+              name="q"
+              value={formFilter.values.q}
               onChange={formFilter.handleChange}
+              onPressEnter={formFilter.submitForm}
               allowClear
             />
             <Button type="primary" onClick={formFilter.submitForm}>
@@ -95,6 +133,7 @@ const Schedules = () => {
 
         <div>
           <TableComponent
+            changePage={handleChangePage}
             handleSelectItem={handleSelectItem}
             handleConfirmDeleteItem={handleConfirmDeleteItem}
           />

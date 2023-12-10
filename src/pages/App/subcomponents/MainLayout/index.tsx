@@ -6,12 +6,7 @@ import { LOGIN } from "routes/route.constant";
 import Header from "pages/App/subcomponents/MainLayout/subcomponents/Header";
 import SideBar from "pages/App/subcomponents/MainLayout/subcomponents/SideBar";
 import authApi from "apis/auth";
-import {
-  getSelectionProductCategories,
-  getSelectionRoles,
-  login,
-  logout,
-} from "pages/App/store/appSlice";
+import { login, logout } from "pages/App/store/appSlice";
 import styles from "pages/App/subcomponents/MainLayout/style.module.css";
 import { userApi } from "apis/user";
 
@@ -22,20 +17,19 @@ const MainLayout: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("check");
+
     handleCheckToken();
-    // dispatch(getSelectionProductCategories());
-    // dispatch(getSelectionRoles());
   }, []);
 
   const handleCheckToken = async () => {
-    try {
-      // await userApi.getAll();
-      // dispatch(login());
-      setIsCheckingToken(false);
-    } catch (error) {
+    const data = window.sessionStorage.getItem("access_token");
+    if (data) {
+      dispatch(login());
+    } else {
       dispatch(logout());
-      setIsCheckingToken(false);
     }
+    setIsCheckingToken(false);
   };
 
   if (isCheckingToken) {
