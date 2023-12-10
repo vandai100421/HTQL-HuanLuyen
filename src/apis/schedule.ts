@@ -1,10 +1,9 @@
 import { request } from "apis/base";
 import { CommonGetAllParams } from "constants/types/common.type";
-import { TypeEditUser } from "constants/types/user.type";
 
-export const userApi = {
+export const scheduleApi = {
   getAll: (params?: CommonGetAllParams) => {
-    return request("/NguoiDung/search", {
+    return request("/KHHuanLuyen/getOfUser", {
       method: "GET",
       params,
       headers: {
@@ -13,24 +12,26 @@ export const userApi = {
       },
     });
   },
-  create: (data: TypeEditUser) => {
-    return request("/NguoiDung", {
+  create: (data: FormData) => {
+    return request("/KHHuanLuyen", {
       method: "POST",
       data,
       headers: {
-        Authorization:
-          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+        "Content-Type": "multipart/form-data",
       },
     });
   },
-  update: (data: TypeEditUser) => {
-    return request("/NguoiDung/" + data.id, {
+  update: (data: FormData) => {
+    return request("/KHHuanLuyen/" + data.get("id"), {
       method: "PUT",
       data,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
   },
   delete: (id: number) => {
-    return request("/NguoiDung/" + id, {
+    return request("/KHHuanLuyen/" + id, {
       method: "DELETE",
     });
   },

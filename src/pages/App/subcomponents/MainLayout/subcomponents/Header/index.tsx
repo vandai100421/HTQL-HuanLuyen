@@ -16,10 +16,10 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      dispatch(logout()); // sorry :((
-      await authApi.logout();
+      dispatch(logout());
+      window.sessionStorage.removeItem("access_token");
     } catch (error) {
-      console.log("Đăng xuất thành công. Vui lòng thử lại.");
+      console.log("Đăng xuất không thành công thành công. Vui lòng thử lại.");
     }
   };
 

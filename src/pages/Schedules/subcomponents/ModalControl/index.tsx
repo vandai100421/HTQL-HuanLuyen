@@ -1,111 +1,173 @@
-import React, { FC } from "react";
-import { Alert, Form, Input, InputNumber, Modal } from "antd";
+import React, { FC, useEffect } from "react";
+import { Button, Form, Input, Modal, TreeSelect, Upload } from "antd";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useHookstate } from "@hookstate/core";
+import companiesStore from "pages/Companies/store";
+import { TypeEditSchedule } from "constants/types/schedule.type";
+import { UploadOutlined } from "@ant-design/icons";
+import { UploadProps } from "antd/lib/upload/interface";
 
 type Props = {
   visible?: boolean;
   onCancel: () => void;
   data?: any;
-  onSubmit: (data: any) => void;
-  error?: string;
+  onSubmit: (data: FormData) => void;
   okText: string;
 };
 
-const schemaControl = Yup.object().shape({
-  name: Yup.string().required("Tên danh mục không được để trống."),
-});
+const schemaControl = Yup.object().shape({});
 
 const ModalControl: FC<Props> = ({
   visible,
   onCancel,
   data,
   onSubmit,
-  error,
   okText,
 }) => {
-  const formControlTable = useFormik({
+  const companiesState = useHookstate(companiesStore);
+
+  const changeFileList: UploadProps["onChange"] = ({ file, fileList }) => {
+    if (file.status !== "uploading") {
+      formControlData.setFieldValue("link", [fileList[fileList.length - 1]]);
+    }
+  };
+  const formControlData = useFormik<TypeEditSchedule>({
     initialValues: {
       id: 0,
-      name: "",
-      num_people: 1,
-      status: "",
-      customers_id: 0,
+      tenKeHoach: "",
+      link: [],
+      nguoiGui: 0,
+      donViIds: [],
     },
     validationSchema: schemaControl,
     onSubmit: (data) => {
-      onSubmit(data);
+      const formData = new FormData();
+      formData.append("id", data.id.toString());
+      formData.append("TenKeHoach", data.tenKeHoach);
+      formData.append("nguoiGui", data.nguoiGui.toString());
+      data["link"].forEach((value) => {
+        if (value.originFileObj instanceof File) {
+          const valueBlob = new Blob([value.originFileObj]);
+          const fileOfBlob = new File([valueBlob], "" + value.name);
+          formData.append("link", fileOfBlob);
+        }
+      });
+
+      data["donViIds"].forEach((value) => formData.append("donViIds", value));
+
+      onSubmit(formData);
+      formControlData.resetForm();
     },
   });
+
+  useEffect(() => {
+    if (data) {
+      const { id, tenKeHoach, link, nguoiGui, donViIds } = data;
+      console.log("data", data);
+
+      formControlData.setValues({
+        id,
+        tenKeHoach,
+        link: [
+          {
+            uid: "1",
+            name: link,
+            status: "done",
+            // // url: "http://www.baidu.com/xxx.png",
+          },
+        ],
+        nguoiGui,
+        donViIds,
+      });
+    }
+  }, [visible]);
+
+  const changeCompany = (newValue: string[]) => {
+    formControlData.setFieldValue("donViIds", newValue);
+  };
 
   return (
     <Modal
       visible={visible}
       onCancel={onCancel}
       okText={okText}
-      onOk={formControlTable.submitForm}
-      confirmLoading={formControlTable.isSubmitting}
+      onOk={formControlData.submitForm}
     >
-      {error && (
-        <Alert message={error} type="error" style={{ marginBottom: 16 }} />
-      )}
-      <Form layout="vertical">
+      <Form layout="vertical" encType="multipart/form-data">
         <Form.Item
-          label="Tên bàn"
+          label="Tên kế hoạch"
           validateStatus={
-            formControlTable.errors.name && formControlTable.touched.name
+            formControlData.errors.tenKeHoach &&
+            formControlData.touched.tenKeHoach
               ? "error"
               : ""
           }
           help={
-            formControlTable.errors.name && formControlTable.touched.name
-              ? formControlTable.errors.name
+            formControlData.errors.tenKeHoach &&
+            formControlData.touched.tenKeHoach
+              ? formControlData.errors.tenKeHoach
               : null
           }
         >
           <Input
-            name="name"
-            placeholder="VD: Bàn 1, Bàn 2 ..."
-            value={formControlTable.values.name}
-            onChange={formControlTable.handleChange}
-            onBlur={formControlTable.handleBlur}
+            name="tenKeHoach"
+            placeholder="Nhập tên kế hoạch"
+            value={formControlData.values.tenKeHoach}
+            onChange={formControlData.handleChange}
+            onBlur={formControlData.handleBlur}
           />
         </Form.Item>
-        <Form.Item label="Trạng thái">
-          <Input
-            name="status"
-            placeholder="0: Trống, 1: Đã đặt"
-            value={formControlTable.values.status}
-            onChange={formControlTable.handleChange}
-            onBlur={formControlTable.handleBlur}
-          />
+
+        <Form.Item
+          label="Tài liệu"
+          validateStatus={
+            formControlData.errors.tenKeHoach &&
+            formControlData.touched.tenKeHoach
+              ? "error"
+              : ""
+          }
+          help={
+            formControlData.errors.tenKeHoach &&
+            formControlData.touched.tenKeHoach
+              ? formControlData.errors.tenKeHoach
+              : null
+          }
+        >
+          <Upload
+            onChange={changeFileList}
+            fileList={formControlData.values.link}
+            beforeUpload={() => {
+              const reader = new FileReader();
+
+              reader.onload = () => {
+                // console.log(e.target.result);
+              };
+              // reader.readAsText(file);
+
+              // Prevent upload
+              return false;
+            }}
+          >
+            <Button icon={<UploadOutlined />}>Tải lên</Button>
+          </Upload>
         </Form.Item>
-        <Form.Item label="Số ghế">
-          <InputNumber
-            min={0}
-            max={12}
-            name="num_people"
-            placeholder="0: Trống, 1: Đã đặt"
-            value={formControlTable.values.num_people}
-            onChange={(value: number) =>
-              formControlTable.setFieldValue("num_people", value)
+        <Form.Item label="Đơn vị">
+          <TreeSelect
+            style={{ width: "100%" }}
+            treeCheckable={true}
+            value={
+              formControlData.values.donViIds
+                ? formControlData.values.donViIds
+                : ["1"]
             }
-            onBlur={formControlTable.handleBlur}
+            dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+            treeData={companiesState.companiesTree.get()}
+            placeholder="Chọn đơn vị"
+            treeDefaultExpandAll
+            onChange={changeCompany}
           />
         </Form.Item>
-        {/* <Form.Item label="ID khách hàng">
-          <InputNumber
-            min={0}
-            max={4}
-            name="customers_id"
-            placeholder="Không bắt buộc"
-            value={formControlTable.values.customers_id}
-            onChange={(value: number) =>
-              formControlTable.setFieldValue("customers_id", value)
-            }
-            onBlur={formControlTable.handleBlur}
-          />
-        </Form.Item> */}
       </Form>
     </Modal>
   );

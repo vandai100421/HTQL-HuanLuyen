@@ -23,7 +23,7 @@ const initialState: CompaniesState = {
 type NodeType = {
   title: string;
   value: string;
-  children?: Array<any>;
+  children?: NodeType[];
 };
 
 const companiesStore = createState(initialState);
@@ -83,10 +83,10 @@ function convertDonVi(donVi: any, tenCha: any) {
     };
 
     if (donVi.donVis && donVi.donVis.length > 0) {
-      const tempData = donVi.donVis.map((child: any) =>
-        convertDonVi(child, tenDonvi)
+      const tempData = donVi.donVis.map(
+        (child: any) => convertDonVi(child, tenDonvi)[0]
       );
-      node.children = tempData ? tempData[0] : null;
+      node.children = tempData ? tempData : null;
     }
 
     result.push(node);

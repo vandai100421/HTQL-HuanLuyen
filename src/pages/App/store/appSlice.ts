@@ -12,7 +12,7 @@ interface AppState {
 }
 
 const initialState: AppState = {
-  isLogged: true,
+  isLogged: false,
   productCategoriesSelection: [],
   rolesSelection: [],
 };

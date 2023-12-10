@@ -1,26 +1,17 @@
-import React, { useState } from "react";
-import { Alert, Button, Card, Checkbox, Form, Input } from "antd";
+import React, { useEffect, useState } from "react";
+import { Alert, Button, Card, Checkbox, Form, Input, message } from "antd";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import authApi from "apis/auth";
-import { isValidEmail, isValidPhoneNumber } from "utils/validate";
-import { LoginData } from "constants/types/auth.type";
+import { TypeLogin } from "constants/types/auth.type";
 import { useDispatch } from "react-redux";
 import { login } from "pages/App/store/appSlice";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT } from "routes/route.constant";
 import styles from "pages/Login/Login.module.css";
-import mainLogo from "assets/images/logoQLNH.jpg";
-
-type FormLoginData = {
-  accessValue: string;
-  password: string;
-};
 
 const loginSchema = Yup.object().shape({
-  accessValue: Yup.string().required(
-    "Email/Số điện thoại/Tên đăng nhập không được để trống."
-  ),
+  tenNguoiDung: Yup.string().required("Tên đăng nhập không được để trống."),
 });
 
 const Login = () => {
@@ -30,40 +21,24 @@ const Login = () => {
   // self state
   const [loginError, setLoginError] = useState<string>("");
 
-  const initFormLoginData: FormLoginData = {
-    accessValue: "",
-    password: "",
+  const initFormLoginData: TypeLogin = {
+    tenNguoiDung: "",
+    matKhau: "",
   };
 
-  const formLogin = useFormik({
+  const formLogin = useFormik<TypeLogin>({
     initialValues: initFormLoginData,
     validationSchema: loginSchema,
     onSubmit: async (data) => {
-      const loginData: LoginData = {
-        password: data.password,
-      };
-      if (isValidEmail(data.accessValue)) {
-        loginData.email = data.accessValue;
-      } else if (isValidPhoneNumber(data.accessValue)) {
-        loginData.phone = data.accessValue;
-      } else {
-        loginData.username = data.accessValue;
-      }
-
       try {
-        const dataRes = await authApi.login(loginData);
-        window.sessionStorage.setItem(
-          "access_token",
-          dataRes.data.access_token
-        );
-        window.sessionStorage.setItem(
-          "refresh_token",
-          dataRes.data.refresh_token
-        );
+        const dataRes = await authApi.login(data);
+        window.sessionStorage.setItem("access_token", dataRes.data.data);
         dispatch(login());
         navigate(DEFAULT);
       } catch (error: any) {
-        setLoginError(error.response.data.error.message);
+        message.error(
+          "Lỗi đăng nhập! Tên người dùng hoặc mật khẩu không chính xác."
+        );
       }
     },
   });
@@ -87,18 +62,18 @@ const Login = () => {
           <Form onFinish={formLogin.handleSubmit}>
             <Form.Item
               validateStatus={
-                formLogin.errors.accessValue && formLogin.touched.accessValue
+                formLogin.errors.tenNguoiDung && formLogin.touched.tenNguoiDung
                   ? "error"
                   : ""
               }
               help={
-                formLogin.touched.accessValue && formLogin.errors.accessValue
+                formLogin.touched.tenNguoiDung && formLogin.errors.tenNguoiDung
               }
             >
               <Input
                 placeholder="Email/Số điện thoại/Tên đăng nhập"
-                name="accessValue"
-                value={formLogin.values.accessValue}
+                name="tenNguoiDung"
+                value={formLogin.values.tenNguoiDung}
                 onChange={formLogin.handleChange}
               />
             </Form.Item>
@@ -106,8 +81,8 @@ const Login = () => {
               <Input
                 placeholder="Mật khẩu"
                 type="password"
-                name="password"
-                value={formLogin.values.password}
+                name="matKhau"
+                value={formLogin.values.matKhau}
                 onChange={formLogin.handleChange}
               />
             </Form.Item>

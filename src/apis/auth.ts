@@ -1,9 +1,9 @@
 import { request } from "apis/base";
-import { LoginData } from "constants/types/auth.type";
+import { TypeLogin } from "constants/types/auth.type";
 
 const authApi = {
-  login: (data: LoginData) => {
-    return request("/v1/auth/authenticate", {
+  login: (data: TypeLogin) => {
+    return request("/Auth/Login", {
       method: "POST",
       data,
     });
