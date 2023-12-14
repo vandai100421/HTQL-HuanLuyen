@@ -1,42 +1,48 @@
 import { createState } from "@hookstate/core";
-import { roleApi } from "apis/role";
-import { GetRolesParams, Role } from "constants/types/role.type";
+import { message } from "antd";
+import { scheduleApi } from "apis/schedule";
+import { CommonGetAllParams } from "constants/types/common.type";
+import { TypeSchedule } from "constants/types/schedule.type";
 
-type RolesState = {
-  roles: Array<Role>;
-  // limit: number;
-  // page: number;
-  // total: number;
-  isLoadingGetAllRole: boolean;
+type roleState = {
+  roles: Array<TypeSchedule>;
+  limit: number;
+  page: number;
+  total: number;
+  isLoading: boolean;
 };
 
-const initialState: RolesState = {
+const initialState: roleState = {
   roles: [],
-  // limit: 10,
-  // page: 1,
-  // total: 0,
-  isLoadingGetAllRole: true,
+  limit: 10,
+  page: 1,
+  total: 0,
+  isLoading: true,
 };
 
-const store = createState(initialState);
+const roleStore = createState(initialState);
 
-export const fetchRoleList = async (params?: GetRolesParams) => {
+export const getAllRole = async (params?: CommonGetAllParams) => {
   try {
-    store.isLoadingGetAllRole.set(true);
+    roleStore.isLoading.set(true);
     const _params = {
       ...params,
-      // page: params?.page ? params.page : store.page.get(),
-      // limit: params?.limit ? params.limit : store.limit.get(),
+      page: params?.page ? params.page : roleStore.page.get(),
+      limit: params?.limit ? params.limit : roleStore.limit.get(),
     };
-    const rolesRes = await roleApi.getAll(_params);
+    const dataRes = await scheduleApi.getAll(_params);
 
-    store.set({
-      roles: rolesRes.data,
-      isLoadingGetAllRole: false,
+    roleStore.set({
+      roles: dataRes.data.data,
+      page: dataRes.data.page,
+      total: dataRes.data.total,
+      limit: dataRes.data.limit,
+      isLoading: false,
     });
   } catch (error) {
-    store.isLoadingGetAllRole.set(false);
+    roleStore.isLoading.set(false);
+    message.error("Lỗi khi lấy danh sách nhóm người dùng.");
   }
 };
 
-export default store;
+export default roleStore;

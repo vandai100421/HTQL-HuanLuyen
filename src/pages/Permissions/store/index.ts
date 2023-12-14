@@ -1,47 +1,47 @@
 import { createState } from "@hookstate/core";
-import permissionApi from "apis/permission";
-import {
-  GetPermissionsParams,
-  TypePermission,
-} from "constants/types/permission.type";
+import { message } from "antd";
+import { scheduleApi } from "apis/schedule";
+import { CommonGetAllParams } from "constants/types/common.type";
+import { TypeSchedule } from "constants/types/schedule.type";
 
-type PermissionsState = {
-  permissions: Array<TypePermission>;
-  // limit: number;
-  // page: number;
-  // total: number;
-  isLoadingGetAllPermission: boolean;
+type permissionState = {
+  permissions: Array<TypeSchedule>;
+  limit: number;
+  page: number;
+  total: number;
+  isLoading: boolean;
 };
 
-const initialState: PermissionsState = {
+const initialState: permissionState = {
   permissions: [],
-  // limit: 10,
-  // page: 1,
-  // total: 0,
-  isLoadingGetAllPermission: true,
+  limit: 10,
+  page: 1,
+  total: 0,
+  isLoading: true,
 };
 
 const permissionStore = createState(initialState);
 
-export const fetchPermissionList = async (params?: GetPermissionsParams) => {
+export const getAllPermission = async (params?: CommonGetAllParams) => {
   try {
-    permissionStore.isLoadingGetAllPermission.set(true);
+    permissionStore.isLoading.set(true);
     const _params = {
       ...params,
-      // page: params?.page ? params.page : permissionStore.page.get(),
-      // limit: params?.limit ? params.limit : permissionStore.limit.get(),
+      page: params?.page ? params.page : permissionStore.page.get(),
+      limit: params?.limit ? params.limit : permissionStore.limit.get(),
     };
-    const dataRes = await permissionApi.getAll(_params);
+    const dataRes = await scheduleApi.getAll(_params);
 
     permissionStore.set({
-      permissions: dataRes.data,
-      // page: dataRes.data.result.page,
-      // limit: dataRes.data.result.limit,
-      // total: dataRes.data.result.totalDocs,
-      isLoadingGetAllPermission: false,
+      permissions: dataRes.data.data,
+      page: dataRes.data.page,
+      total: dataRes.data.total,
+      limit: dataRes.data.limit,
+      isLoading: false,
     });
   } catch (error) {
-    permissionStore.isLoadingGetAllPermission.set(false);
+    permissionStore.isLoading.set(false);
+    message.error("Lỗi khi lấy danh sách quyền.");
   }
 };
 

@@ -1,11 +1,10 @@
 import React, { FC } from "react";
-import { Button, Popconfirm, Row, Space, Table } from "antd";
+import { Button, Popconfirm, Space, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { useHookstate } from "@hookstate/core";
-import scheduleStore from "pages/Schedules/store";
 import { TypeSchedule } from "constants/types/schedule.type";
-import { utils, writeFile } from "xlsx";
+import roleStore from "pages/Roles/store";
 
 type Props = {
   changePage: (page: number, pageSize: number) => void;
@@ -18,7 +17,7 @@ const TableComponent: FC<Props> = ({
   handleConfirmDeleteItem,
   handleSelectItem,
 }) => {
-  const scheduleState = useHookstate(scheduleStore);
+  const roleState = useHookstate(roleStore);
 
   const columns: ColumnsType<TypeSchedule> = [
     {
@@ -73,34 +72,20 @@ const TableComponent: FC<Props> = ({
     },
   ];
 
-  const handleExportFile = () => {
-    const wb = utils.book_new();
-    const ws = utils.json_to_sheet(scheduleState.schedules.get());
-    utils.book_append_sheet(wb, ws, "Schedules");
-    writeFile(wb, "Danh Sach Kế hoạch.xlsx");
-  };
-
   return (
     <>
       <Table
         columns={columns}
-        dataSource={scheduleState.schedules.get()}
-        loading={scheduleState.isLoadingGetAllSchedule.get()}
+        dataSource={roleState.roles.get()}
+        loading={roleState.isLoading.get()}
         pagination={{
-          pageSize: scheduleState.limit.get(),
-          current: scheduleState.page.get(),
-          total: scheduleState.total.get(),
+          pageSize: roleState.limit.get(),
+          current: roleState.page.get(),
+          total: roleState.total.get(),
           hideOnSinglePage: true,
           onChange: changePage,
         }}
       />
-      {scheduleState.total.get() > 0 && (
-        <Row justify="end" style={{ padding: "10px 0 0 0" }}>
-          <Button type="primary" onClick={handleExportFile}>
-            Export File
-          </Button>
-        </Row>
-      )}
     </>
   );
 };

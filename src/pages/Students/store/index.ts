@@ -1,5 +1,5 @@
 import { createState } from "@hookstate/core";
-import { GetCustomers, TypeCustomers } from "constants/types/customers.type";
+import { TypeCustomers } from "constants/types/customers.type";
 import { studentAPI } from "apis/student";
 import { GetStudentsParams } from "constants/types/students.type";
 
@@ -7,6 +7,7 @@ type StudentsState = {
   students: Array<TypeCustomers>;
   limit?: number;
   page?: number;
+  total: number;
   isLoadingGetAllStudent: boolean;
 };
 
@@ -14,6 +15,7 @@ const initialState: StudentsState = {
   students: [],
   limit: 10,
   page: 1,
+  total: 0,
   isLoadingGetAllStudent: true,
 };
 
@@ -32,8 +34,9 @@ export const fetchStudentList = async (params?: GetStudentsParams) => {
 
     studentsStore.set({
       students: dataRes.data.data,
-      // page: dataRes.data.result.page,
-      // limit: dataRes.data.result.limit,
+      page: dataRes.data.page,
+      limit: dataRes.data.limit,
+      total: dataRes.data.total,
       isLoadingGetAllStudent: false,
     });
   } catch (error) {

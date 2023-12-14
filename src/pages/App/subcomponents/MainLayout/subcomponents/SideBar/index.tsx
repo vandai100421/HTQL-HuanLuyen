@@ -17,6 +17,8 @@ import {
   STUDENTS,
   EQUIPMENTS,
   SCHEDULES,
+  ROLE,
+  PERMISSION,
 } from "routes/route.constant";
 
 type SubMenuItem = {
@@ -38,6 +40,25 @@ const menus: Array<MenuItem> = [
     key: "dashboard",
     path: DEFAULT,
     icon: <PieChartOutlined />,
+  },
+  {
+    title: "Người dùng",
+    key: "user",
+    icon: <TeamOutlined />,
+    submenus: [
+      {
+        title: "Danh sách người dùng",
+        path: USER,
+      },
+      {
+        title: "Danh sách nhóm",
+        path: ROLE,
+      },
+      {
+        title: "Danh sách quyền",
+        path: PERMISSION,
+      },
+    ],
   },
   {
     title: "Đơn vị",
@@ -95,17 +116,6 @@ const menus: Array<MenuItem> = [
       {
         title: "Danh sách kế hoạch",
         path: SCHEDULES,
-      },
-    ],
-  },
-  {
-    title: "Người dùng",
-    key: "user",
-    icon: <TeamOutlined />,
-    submenus: [
-      {
-        title: "Danh sách người dùng",
-        path: USER,
       },
     ],
   },

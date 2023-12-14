@@ -7,7 +7,7 @@ import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import { getAllSchedule } from "./store";
 import { scheduleApi } from "apis/schedule";
-import { TypeEditSchedule, TypeSchedule } from "constants/types/schedule.type";
+import { TypeSchedule } from "constants/types/schedule.type";
 import { CommonGetAllParams } from "constants/types/common.type";
 import { fetchCompaniesTree } from "pages/Companies/store";
 
