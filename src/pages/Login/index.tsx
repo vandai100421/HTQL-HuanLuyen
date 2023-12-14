@@ -32,13 +32,15 @@ const Login = () => {
     onSubmit: async (data) => {
       try {
         const dataRes = await authApi.login(data);
-        window.sessionStorage.setItem("access_token", dataRes.data.data);
-        dispatch(login());
-        navigate(DEFAULT);
+        if (dataRes.data.status === "success") {
+          window.sessionStorage.setItem("access_token", dataRes.data.data);
+          dispatch(login());
+          navigate(DEFAULT);
+        } else {
+          message.error("Tên người dùng hoặc mật khẩu không chính xác.");
+        }
       } catch (error: any) {
-        message.error(
-          "Lỗi đăng nhập! Tên người dùng hoặc mật khẩu không chính xác."
-        );
+        message.error("Lỗi đăng nhập!");
       }
     },
   });

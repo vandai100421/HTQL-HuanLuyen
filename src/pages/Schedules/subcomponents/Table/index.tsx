@@ -29,6 +29,22 @@ const TableComponent: FC<Props> = ({
       dataIndex: "tenDonVi",
     },
     {
+      title: "Tài liệu",
+      dataIndex: "link",
+      render: (value: string) => {
+        return (
+          <a
+            href={process.env.REACT_APP_DOWNLOAD_URL + value}
+            download={value.slice(8)}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {value.slice(8)}
+          </a>
+        );
+      },
+    },
+    {
       title: "Thao tác",
       render: (_, item: TypeSchedule) => (
         <>

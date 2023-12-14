@@ -64,17 +64,15 @@ const ModalControl: FC<Props> = ({
   useEffect(() => {
     if (data) {
       const { id, tenKeHoach, link, nguoiGui, donViIds } = data;
-      console.log("data", data);
-
       formControlData.setValues({
         id,
         tenKeHoach,
         link: [
           {
             uid: "1",
-            name: link,
+            name: link.slice(8),
             status: "done",
-            // // url: "http://www.baidu.com/xxx.png",
+            url: process.env.REACT_APP_DOWNLOAD_URL + link,
           },
         ],
         nguoiGui,
