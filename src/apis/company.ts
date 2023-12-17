@@ -45,4 +45,14 @@ export const companyAPI = {
       },
     });
   },
+
+  getAllLoaiDonVi: () => {
+    return request("/LoaiDonVi", {
+      method: "GET",
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
+    });
+  },
 };

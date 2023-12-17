@@ -35,7 +35,7 @@ const ModalControl: FC<Props> = ({
       tinhTrang: 1,
       moTa: "",
       diaDiem: "",
-      donViId: 1,
+      donViId: Number(window.sessionStorage.getItem("donViId")),
     },
     validationSchema: schemaControl,
     onSubmit: (data) => {
@@ -69,7 +69,6 @@ const ModalControl: FC<Props> = ({
         donViId,
       });
     }
-    
   }, [visible]);
 
   return (
@@ -187,7 +186,7 @@ const ModalControl: FC<Props> = ({
           />
         </Form.Item>
 
-        <Form.Item label="Đơn vị">
+        {/* <Form.Item label="Đơn vị">
           <TreeSelect
             style={{ width: "100%" }}
             value={formControlData.values.donViId.toString()}
@@ -197,7 +196,7 @@ const ModalControl: FC<Props> = ({
             treeDefaultExpandAll
             onChange={changeCompany}
           />
-        </Form.Item>
+        </Form.Item> */}
       </Form>
     </Modal>
   );

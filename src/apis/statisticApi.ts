@@ -15,7 +15,7 @@ export const statisticApi = {
       },
     });
   },
-  getKTDVByLevelLower: (params: ParamsStatistic) => {
+  getKTDVByLevelLower: (params?: ParamsStatistic) => {
     return request("/ThongKe/GetKTDVByLevelLower", {
       method: "GET",
       params,

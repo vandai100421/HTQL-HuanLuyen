@@ -56,32 +56,32 @@ const TableComponent: FC<Props> = ({
         <Tag color="success">{moment(value).format("DD/MM/YYYY")}</Tag>
       ),
     },
-    {
-      title: "Thao tác",
-      render: (_, item: TypeSchedule) => (
-        <>
-          <Space direction="horizontal">
-            <Button
-              size="small"
-              type="link"
-              onClick={() => handleSelectItem(item)}
-              icon={<EditOutlined style={{ color: "orange" }} />}
-            />
-            <Popconfirm
-              title="Xóa kế hoạch huấn luyện này?"
-              onConfirm={() => handleConfirmDeleteItem(item.id)}
-            >
-              <Button
-                size="small"
-                type="link"
-                danger
-                icon={<DeleteOutlined />}
-              />
-            </Popconfirm>
-          </Space>
-        </>
-      ),
-    },
+    // {
+    //   title: "Thao tác",
+    //   render: (_, item: TypeSchedule) => (
+    //     <>
+    //       <Space direction="horizontal">
+    //         <Button
+    //           size="small"
+    //           type="link"
+    //           onClick={() => handleSelectItem(item)}
+    //           icon={<EditOutlined style={{ color: "orange" }} />}
+    //         />
+    //         <Popconfirm
+    //           title="Xóa kế hoạch huấn luyện này?"
+    //           onConfirm={() => handleConfirmDeleteItem(item.id)}
+    //         >
+    //           <Button
+    //             size="small"
+    //             type="link"
+    //             danger
+    //             icon={<DeleteOutlined />}
+    //           />
+    //         </Popconfirm>
+    //       </Space>
+    //     </>
+    //   ),
+    // },
   ];
 
   const handleExportFile = () => {

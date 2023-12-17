@@ -34,11 +34,7 @@ const TableCustomers: FC<Props> = ({
       },
       {
         title: "Loại đơn vị",
-        dataIndex: "loaiDonViId",
-      },
-      {
-        title: "Email",
-        dataIndex: "email",
+        dataIndex: "tenLoaiDv",
       },
       {
         title: "Thao tác",
