@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import { Button, InputNumber, Row, Table, message } from "antd";
 import { useHookstate } from "@hookstate/core";
-import resultPlanStore from "../../store";
+import resultPlanStore, { getAllResultPlan } from "../../store";
 import {
   TypeItemUpdateResultPlan,
   TypeUpdateResultPlan,
@@ -14,6 +14,7 @@ const TableComponent = () => {
 
   const [setsetting, setSetsetting] = useState(false);
 
+  dataResult.current = [];
   for (let i = 0; i < resultPlanState.value.total; i++) {
     const newObj: TypeItemUpdateResultPlan = {
       ketQua: resultPlanState.value.resultPlans
@@ -70,7 +71,7 @@ const TableComponent = () => {
     },
   ];
 
-  const handleChangeItemKQ = (value: number, idKq: number) => {
+  const handleChangeItemKQ = async (value: number, idKq: number) => {
     setSetsetting(!setsetting);
     for (let i = 0; i < dataResult.current.length; i++) {
       if (dataResult.current[i].ketQuaId === idKq) {
@@ -78,31 +79,17 @@ const TableComponent = () => {
         return;
       }
     }
-  };
-
-  const handleFinish = async () => {
-    try {
-      const data: TypeUpdateResultPlan = {
-        keHoachId: resultPlanState.value.id,
-        details: dataResult.current,
-      };
-      console.log(data);
-      await resultPlanApi.updateListKQ(data);
-      message.success("Cập nhật điểm danh thành công");
-    } catch (error) {
-      message.error("Lối khi cập nhật điểm danh");
-    }
+    const data: TypeUpdateResultPlan = {
+      keHoachId: resultPlanState.value.id,
+      details: dataResult.current,
+    };
+    console.log(data);
+    await resultPlanApi.updateListKQ(data);
+    getAllResultPlan({ keHoachId: resultPlanState.value.id });
   };
 
   return (
     <>
-      {resultPlanState.value.id !== 0 && (
-        <Row justify="end" style={{ padding: "12px 0" }}>
-          <Button type="primary" onClick={handleFinish}>
-            Cập nhật
-          </Button>
-        </Row>
-      )}
       <Table columns={columns} dataSource={resultPlanState.value.resultPlans} />
     </>
   );

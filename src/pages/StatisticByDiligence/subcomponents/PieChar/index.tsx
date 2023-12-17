@@ -8,8 +8,6 @@ type Props = {
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export const PieChar: FC<Props> = ({ data }) => {
-    console.log(data);
-    
   const labels = data.map((item: any) => item.tenKeHoach);
   const chuyenCans = data
     .map((item: any) => item.chuyenCan)
@@ -17,8 +15,6 @@ export const PieChar: FC<Props> = ({ data }) => {
   const soBuoiHoc = data
     .map((item: any) => item.soBuoiHoc)
     .reduce((acc: any, current: any) => acc + current, 0);
-
-  console.log(chuyenCans, soBuoiHoc);
 
   const datas = {
     labels: ["Có mặt", "Nghỉ"],
