@@ -1,9 +1,12 @@
 import { createState } from "@hookstate/core";
 import { companyAPI } from "apis/company";
-import { GetCompaniesParams } from "constants/types/companies.type";
+import {
+  GetCompaniesParams,
+  TypeCompanies,
+} from "constants/types/companies.type";
 
 type CompaniesState = {
-  companies: Array<any>;
+  companies: Array<TypeCompanies>;
   companiesTree: Array<any>;
   limit?: number;
   page?: number;
