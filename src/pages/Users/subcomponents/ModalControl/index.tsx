@@ -19,17 +19,17 @@ const schemaControl = Yup.object().shape({
   hoTen: Yup.string().required("Họ và tên không được để trống."),
   tenNguoiDung: Yup.string().required("Tên đăng nhập không được để trống."),
   email: Yup.string().required("Email không được để trống."),
-  matKhau: Yup.string()
-    .min(8, "Mật khẩu phải có ít nhất 8 kí tự")
-    .required("Mật khẩu không được để trống."),
-  confirmMatKhau: Yup.string().test(
-    "confirmPassword",
-    "Mật khẩu nhập lại không khớp",
-    (value, ctx) => {
-      if (ctx.parent.matKhau && ctx.parent.matKhau === value) return true;
-      return false;
-    }
-  ),
+  // matKhau: Yup.string()
+  //   .min(8, "Mật khẩu phải có ít nhất 8 kí tự")
+  //   .required("Mật khẩu không được để trống."),
+  // confirmMatKhau: Yup.string().test(
+  //   "confirmPassword",
+  //   "Mật khẩu nhập lại không khớp",
+  //   (value, ctx) => {
+  //     if (ctx.parent.matKhau && ctx.parent.matKhau === value) return true;
+  //     return false;
+  //   }
+  // ),
 });
 
 const ModalControl: FC<Props> = ({
@@ -48,7 +48,7 @@ const ModalControl: FC<Props> = ({
       matKhau: "",
       confirmMatKhau: "",
       tenNguoiDung: "",
-      vaiTro: 0,
+      vaiTro: 2,
       donViId: 1,
     },
     validationSchema: schemaControl,
@@ -157,7 +157,7 @@ const ModalControl: FC<Props> = ({
                 <Option value={1} key={1}>
                   Quản trị viên
                 </Option>
-                <Option value={0} key={0}>
+                <Option value={2} key={2}>
                   Người dùng
                 </Option>
               </Select>

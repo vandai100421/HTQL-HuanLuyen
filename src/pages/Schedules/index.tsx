@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import TableComponent from "pages/Schedules/subcomponents/Table";
+import TableComponent from "./subcomponents/Table";
 import { Button, Card, Input, Space, message } from "antd";
 import CardTitle from "components/CardTitle";
 import ModalControl from "pages/Schedules/subcomponents/ModalControl";
@@ -7,7 +7,7 @@ import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import { getAllSchedule } from "./store";
 import { scheduleApi } from "apis/schedule";
-import { TypeSchedule } from "constants/types/schedule.type";
+import { TypeEditSchedule, TypeSchedule } from "constants/types/schedule.type";
 import { CommonGetAllParams } from "constants/types/common.type";
 import { fetchCompaniesTree } from "pages/Companies/store";
 
@@ -31,7 +31,7 @@ const Schedules = () => {
 
   // Add
   const [visibleModalAdd, setVisibleModalAdd] = useState<boolean>(false);
-  const handleSubmitModalAdd = async (data: FormData) => {
+  const handleSubmitModalAdd = async (data: TypeEditSchedule) => {
     try {
       await scheduleApi.create(data);
       setVisibleModalAdd(false);
@@ -52,7 +52,7 @@ const Schedules = () => {
     setVisibleModalEdit(true);
   };
 
-  const handleSubmitModalEdit = async (data: FormData) => {
+  const handleSubmitModalEdit = async (data: TypeEditSchedule) => {
     try {
       await scheduleApi.update(data);
       console.log(data);

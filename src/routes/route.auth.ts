@@ -8,7 +8,13 @@ import customersRoute from "pages/Customers/route";
 import companiesRoute from "pages/Companies/route";
 import studentsRoute from "pages/Students/route";
 import equipmentsRoute from "pages/Equipments/route";
-import schedulesRoute from "pages/Schedules/route";
+import schedulesYourselfRoute from "pages/Schedules/route";
+import schedulesLowerfRoute from "pages/SchedulesLower/route";
+import schedulesUpperRoute from "pages/SchedulesUpper/route";
+import followPlanRoute from "pages/FollowPlans/route";
+import resultPlanRoute from "pages/ResultPlan/route";
+import StatisticByCompanyRoute from "pages/StatisticByCompany/route";
+import StatisticByDiligenceRoute from "pages/StatisticByDiligence/route";
 
 export default [
   dashboardRoute,
@@ -21,5 +27,11 @@ export default [
   companiesRoute,
   studentsRoute,
   equipmentsRoute,
-  schedulesRoute,
+  schedulesYourselfRoute,
+  followPlanRoute,
+  resultPlanRoute,
+  schedulesLowerfRoute,
+  schedulesUpperRoute,
+  StatisticByCompanyRoute,
+  StatisticByDiligenceRoute,
 ];

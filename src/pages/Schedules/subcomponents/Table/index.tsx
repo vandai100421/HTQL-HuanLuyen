@@ -1,11 +1,16 @@
 import React, { FC } from "react";
-import { Button, Popconfirm, Row, Space, Table } from "antd";
+import { Button, Popconfirm, Row, Space, Table, Tag, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { EditOutlined, DeleteOutlined, LinkOutlined } from "@ant-design/icons";
 import { useHookstate } from "@hookstate/core";
 import scheduleStore from "pages/Schedules/store";
 import { TypeSchedule } from "constants/types/schedule.type";
 import { utils, writeFile } from "xlsx";
+import moment from "moment";
+import { followPlanApi } from "apis/followPlan";
+import { useNavigate } from "react-router-dom";
+import { FOLLOWPLANS } from "routes/route.constant";
+import followPlanStore from "pages/FollowPlans/store";
 
 type Props = {
   changePage: (page: number, pageSize: number) => void;
@@ -19,31 +24,98 @@ const TableComponent: FC<Props> = ({
   handleSelectItem,
 }) => {
   const scheduleState = useHookstate(scheduleStore);
+  const followPlanState = useHookstate(followPlanStore);
+  const navigate = useNavigate();
+
+  const handleCreateFollowPlan = async (id: number) => {
+    try {
+      await followPlanApi.createBuoiHoc(id);
+      followPlanState.merge({ id: id });
+      navigate(FOLLOWPLANS);
+      message.success("Tạo danh sách điểm danh thành công!");
+    } catch (error) {
+      message.error("Lỗi khi tạo danh sách điểm danh!");
+    }
+  };
+
+  const handleDetailFollowPlan = (id: number) => {
+    followPlanState.merge({ id: id });
+    navigate(FOLLOWPLANS);
+  };
 
   const columns: ColumnsType<TypeSchedule> = [
+    {
+      title: "Mã kế hoạch",
+      dataIndex: "maKeHoach",
+    },
     {
       title: "Tên kế hoạch",
       dataIndex: "tenKeHoach",
     },
     {
-      title: "Tên đơn vị",
-      dataIndex: "tenDonVi",
-    },
-    {
-      title: "Tài liệu",
-      dataIndex: "link",
-      render: (value: string) => {
+      title: "Nội dung",
+      dataIndex: "noiDung",
+      render: (value: string, record: any) => {
         return (
-          <a
-            href={process.env.REACT_APP_DOWNLOAD_URL + value}
-            download={value.slice(8)}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {value.slice(8)}
-          </a>
+          <>
+            {value} <>{record.link ? <LinkOutlined /> : null}</>
+          </>
         );
       },
+    },
+    {
+      title: "Bắt đầu",
+      dataIndex: "thoiGianBatDau",
+      render: (value: string) => (
+        <Tag color="success">{moment(value).format("DD/MM/YYYY")}</Tag>
+      ),
+    },
+    {
+      title: "Kết thúc",
+      dataIndex: "thoiGianKetThuc",
+
+      render: (value: string) => (
+        <Tag color="success">{moment(value).format("DD/MM/YYYY")}</Tag>
+      ),
+    },
+    {
+      title: "Điểm danh",
+      render: (_, record) => (
+        <>
+          {record.daTaoBH === 1 ? (
+            <Button
+              type="text"
+              onClick={() => handleDetailFollowPlan(record.id)}
+            >
+              Chi tiết
+            </Button>
+          ) : (
+            <Button
+              type="text"
+              onClick={() => handleCreateFollowPlan(record.id)}
+            >
+              Tạo mới
+            </Button>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "Kết quả",
+      render: (_, record) => (
+        <>
+          {record.daTaoKQ === 1 ? (
+            <Button type="text">Chi tiết</Button>
+          ) : (
+            <Button
+              type="text"
+              onClick={() => handleCreateFollowPlan(record.id)}
+            >
+              Tạo mới
+            </Button>
+          )}
+        </>
+      ),
     },
     {
       title: "Thao tác",

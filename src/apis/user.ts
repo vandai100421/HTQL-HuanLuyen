@@ -27,11 +27,19 @@ export const userApi = {
     return request("/NguoiDung/" + data.id, {
       method: "PUT",
       data,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
   delete: (id: number) => {
     return request("/NguoiDung/" + id, {
       method: "DELETE",
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
 };

@@ -7,7 +7,7 @@ import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
 import { getAllPermission } from "./store";
 import { scheduleApi } from "apis/schedule";
-import { TypeSchedule } from "constants/types/schedule.type";
+import { TypeEditSchedule, TypeSchedule } from "constants/types/schedule.type";
 import { CommonGetAllParams } from "constants/types/common.type";
 import { fetchCompaniesTree } from "pages/Companies/store";
 
@@ -31,7 +31,7 @@ const Permission = () => {
 
   // Add
   const [visibleModalAdd, setVisibleModalAdd] = useState<boolean>(false);
-  const handleSubmitModalAdd = async (data: FormData) => {
+  const handleSubmitModalAdd = async (data: TypeEditSchedule) => {
     try {
       await scheduleApi.create(data);
       setVisibleModalAdd(false);
@@ -52,7 +52,7 @@ const Permission = () => {
     setVisibleModalEdit(true);
   };
 
-  const handleSubmitModalEdit = async (data: FormData) => {
+  const handleSubmitModalEdit = async (data: TypeEditSchedule) => {
     try {
       await scheduleApi.update(data);
       console.log(data);

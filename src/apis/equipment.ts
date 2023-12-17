@@ -7,23 +7,39 @@ export const equipmentAPI = {
     return request("/TrangThietBi/search", {
       method: "GET",
       params,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
   create: (data: TypeEditEquipment) => {
     return request("/TrangThietBi", {
       method: "POST",
       data,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
   update: (data: TypeEditEquipment) => {
     return request("/TrangThietBi/" + data.id, {
       method: "PUT",
       data,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
   delete: (id: number) => {
     return request("/TrangThietBi/" + id, {
       method: "DELETE",
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
 };

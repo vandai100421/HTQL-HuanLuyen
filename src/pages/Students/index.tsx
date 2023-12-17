@@ -43,7 +43,6 @@ const Students = () => {
 
   // Add Customers
   const [visibleAddStudents, setVisibleAddStudents] = useState<boolean>(false);
-  const [addStudentsError, setAddStudentsError] = useState<string>("");
 
   const handleSubmitAddStudent = async (data: TypeCreateStudents) => {
     try {
@@ -60,7 +59,6 @@ const Students = () => {
   const [visibleEditCustomers, setVisibleEditStudents] =
     useState<boolean>(false);
   const [studentsSelected, setStudentsSelected] = useState<TypeStudents>();
-  const [editStudentsError, setEditStudentsError] = useState<string>("");
   const handleOpenEditCustomers = (student: TypeStudents) => {
     setStudentsSelected(student);
     setVisibleEditStudents(true);
@@ -70,12 +68,11 @@ const Students = () => {
     try {
       if (!studentsSelected) return;
       await studentAPI.update(data.id, data);
-      setEditStudentsError("");
       message.success("Cập nhật học viên thành công.");
       formFilter.submitForm();
       setVisibleEditStudents(false);
     } catch (error: any) {
-      setEditStudentsError(error.response.data.error.message);
+      message.error("Lỗi cập nhật học viên");
     }
   };
 
@@ -101,15 +98,13 @@ const Students = () => {
         onCancel={() => setVisibleAddStudents(false)}
         onSubmit={handleSubmitAddStudent}
         okText="Thêm"
-        error={addStudentsError}
       />
       <ModalControlStudent
         visible={visibleEditCustomers}
         onCancel={() => setVisibleEditStudents(false)}
-        students={studentsSelected}
+        data={studentsSelected}
         okText="Cập nhật"
         onSubmit={handleSubmitEditCustomers}
-        error={editStudentsError}
       />
       <div>
         <Card>

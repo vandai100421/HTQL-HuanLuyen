@@ -1,18 +1,29 @@
 import React, { FC, useEffect } from "react";
-import { Button, Form, Input, Modal, TreeSelect, Upload } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Modal,
+  Row,
+  Upload,
+  DatePicker,
+} from "antd";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useHookstate } from "@hookstate/core";
-import companiesStore from "pages/Companies/store";
 import { TypeEditSchedule } from "constants/types/schedule.type";
 import { UploadOutlined } from "@ant-design/icons";
 import { UploadProps } from "antd/lib/upload/interface";
+import moment from "moment";
+
+const { RangePicker } = DatePicker;
 
 type Props = {
   visible?: boolean;
   onCancel: () => void;
   data?: any;
-  onSubmit: (data: FormData) => void;
+  onSubmit: (data: TypeEditSchedule) => void;
   okText: string;
 };
 
@@ -25,64 +36,86 @@ const ModalControl: FC<Props> = ({
   onSubmit,
   okText,
 }) => {
-  const companiesState = useHookstate(companiesStore);
-
   const changeFileList: UploadProps["onChange"] = ({ file, fileList }) => {
     if (file.status !== "uploading") {
-      formControlData.setFieldValue("link", [fileList[fileList.length - 1]]);
+      formControl.setFieldValue("link", [fileList[fileList.length - 1]]);
     }
   };
-  const formControlData = useFormik<TypeEditSchedule>({
+  const formControl = useFormik<TypeEditSchedule>({
     initialValues: {
       id: 0,
+      maKeHoach: "",
       tenKeHoach: "",
       link: [],
-      nguoiGui: 0,
-      donViIds: [],
+      noiDung: "",
+      soBuoiHoc: 0,
+      soTiet: 0,
+      thoiGianBatDau: "",
+      thoiGianKetThuc: "",
+      donViId:  Number(window.sessionStorage.getItem("donViId")),
     },
     validationSchema: schemaControl,
     onSubmit: (data) => {
-      const formData = new FormData();
-      formData.append("id", data.id.toString());
-      formData.append("TenKeHoach", data.tenKeHoach);
-      formData.append("nguoiGui", data.nguoiGui.toString());
-      data["link"].forEach((value) => {
-        if (value.originFileObj instanceof File) {
-          const valueBlob = new Blob([value.originFileObj]);
-          const fileOfBlob = new File([valueBlob], "" + value.name);
-          formData.append("link", fileOfBlob);
-        }
-      });
-
-      data["donViIds"].forEach((value) => formData.append("donViIds", value));
-
-      onSubmit(formData);
-      formControlData.resetForm();
+      onSubmit(data);
+      formControl.resetForm();
     },
   });
 
   useEffect(() => {
     if (data) {
-      const { id, tenKeHoach, link, nguoiGui, donViIds } = data;
-      formControlData.setValues({
+      const {
         id,
+        maKeHoach,
+        tenKeHoach,
+        link,
+        noiDung,
+        soBuoiHoc,
+        soTiet,
+        thoiGianBatDau,
+        thoiGianKetThuc,
+        donViId,
+      } = data;
+      formControl.setValues({
+        id,
+        maKeHoach,
         tenKeHoach,
         link: [
           {
             uid: "1",
-            name: link.slice(8),
+            name: link,
             status: "done",
             url: process.env.REACT_APP_DOWNLOAD_URL + link,
           },
         ],
-        nguoiGui,
-        donViIds,
+        noiDung,
+        soBuoiHoc,
+        soTiet,
+        thoiGianBatDau,
+        thoiGianKetThuc,
+        donViId,
       });
     }
   }, [visible]);
 
-  const changeCompany = (newValue: string[]) => {
-    formControlData.setFieldValue("donViIds", newValue);
+  const chagneSoBuoiHoc = (value: number) => {
+    formControl.setFieldValue("soBuoiHoc", value);
+  };
+  const chagnesoTietHoc = (value: number) => {
+    formControl.setFieldValue("soTiet", value);
+  };
+
+  const handleChangeRangePicker = (
+    value: any,
+    dateStrings: [string, string]
+  ) => {
+    formControl.setFieldValue(
+      "thoiGianBatDau",
+      moment(dateStrings[0]).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
+    );
+    formControl.setFieldValue(
+      "thoiGianKetThuc",
+      moment(dateStrings[1]).format("YYYY-MM-DDTHH:mm:ss.SSSZ")
+    );
   };
 
   return (
@@ -90,80 +123,110 @@ const ModalControl: FC<Props> = ({
       visible={visible}
       onCancel={onCancel}
       okText={okText}
-      onOk={formControlData.submitForm}
+      onOk={formControl.submitForm}
     >
       <Form layout="vertical" encType="multipart/form-data">
-        <Form.Item
-          label="Tên kế hoạch"
+
+      <Form.Item
+          label="Mã kế hoạch"
           validateStatus={
-            formControlData.errors.tenKeHoach &&
-            formControlData.touched.tenKeHoach
+            formControl.errors.maKeHoach && formControl.touched.maKeHoach
               ? "error"
               : ""
           }
           help={
-            formControlData.errors.tenKeHoach &&
-            formControlData.touched.tenKeHoach
-              ? formControlData.errors.tenKeHoach
+            formControl.errors.maKeHoach && formControl.touched.maKeHoach
+              ? formControl.errors.maKeHoach
+              : null
+          }
+        >
+          <Input
+            name="maKeHoach"
+            placeholder="Nhập tên kế hoạch"
+            value={formControl.values.maKeHoach}
+            onChange={formControl.handleChange}
+            onBlur={formControl.handleBlur}
+          />
+        </Form.Item>
+
+        <Form.Item
+          label="Tên kế hoạch"
+          validateStatus={
+            formControl.errors.tenKeHoach && formControl.touched.tenKeHoach
+              ? "error"
+              : ""
+          }
+          help={
+            formControl.errors.tenKeHoach && formControl.touched.tenKeHoach
+              ? formControl.errors.tenKeHoach
               : null
           }
         >
           <Input
             name="tenKeHoach"
             placeholder="Nhập tên kế hoạch"
-            value={formControlData.values.tenKeHoach}
-            onChange={formControlData.handleChange}
-            onBlur={formControlData.handleBlur}
+            value={formControl.values.tenKeHoach}
+            onChange={formControl.handleChange}
+            onBlur={formControl.handleBlur}
           />
         </Form.Item>
 
         <Form.Item
-          label="Tài liệu"
+          label="Nội dung"
           validateStatus={
-            formControlData.errors.tenKeHoach &&
-            formControlData.touched.tenKeHoach
+            formControl.errors.noiDung && formControl.touched.noiDung
               ? "error"
               : ""
           }
           help={
-            formControlData.errors.tenKeHoach &&
-            formControlData.touched.tenKeHoach
-              ? formControlData.errors.tenKeHoach
+            formControl.errors.noiDung && formControl.touched.noiDung
+              ? formControl.errors.noiDung
               : null
           }
         >
-          <Upload
-            onChange={changeFileList}
-            fileList={formControlData.values.link}
-            beforeUpload={() => {
-              const reader = new FileReader();
-
-              reader.onload = () => {
-                // console.log(e.target.result);
-              };
-              // reader.readAsText(file);
-
-              // Prevent upload
-              return false;
-            }}
-          >
-            <Button icon={<UploadOutlined />}>Tải lên</Button>
-          </Upload>
+          <Input
+            name="noiDung"
+            placeholder="Nhập nội dung kế hoạch"
+            value={formControl.values.noiDung}
+            onChange={formControl.handleChange}
+            onBlur={formControl.handleBlur}
+          />
         </Form.Item>
-        <Form.Item label="Đơn vị">
-          <TreeSelect
+
+        <Row gutter={[12, 12]}>
+          <Col span={12}>
+            <Form.Item label="Số buổi học">
+              <InputNumber
+                value={formControl.values.soBuoiHoc}
+                onChange={chagneSoBuoiHoc}
+              />
+            </Form.Item>
+          </Col>
+          <Col span={12}>
+            <Form.Item label="Số tiết học">
+              <InputNumber
+                value={formControl.values.soTiet}
+                onChange={chagnesoTietHoc}
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item label="Thời gian">
+          <RangePicker
             style={{ width: "100%" }}
-            treeCheckable={true}
-            value={
-              formControlData.values.donViIds
-                ? formControlData.values.donViIds
-                : ["1"]
-            }
-            dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-            treeData={companiesState.companiesTree.get()}
-            placeholder="Chọn đơn vị"
-            treeDefaultExpandAll
-            onChange={changeCompany}
+            value={[
+              JSON.parse(JSON.stringify(formControl.values.thoiGianBatDau)) &&
+                moment(
+                  formControl.values.thoiGianBatDau,
+                  "YYYY-MM-DDTHH:mm:ss.SSSZ"
+                ),
+              JSON.parse(JSON.stringify(formControl.values.thoiGianKetThuc)) &&
+                moment(
+                  formControl.values.thoiGianKetThuc,
+                  "YYYY-MM-DDTHH:mm:ss.SSSZ"
+                ),
+            ]}
+            onChange={handleChangeRangePicker}
           />
         </Form.Item>
       </Form>

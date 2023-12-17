@@ -9,11 +9,19 @@ export const companyAPI = {
     return request("/DonVi/search", {
       method: "GET",
       params,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
   getTre: () => {
     return request("/DonVi", {
       method: "GET",
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
 
@@ -21,12 +29,20 @@ export const companyAPI = {
     return request("/DonVi", {
       method: "POST",
       data,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
   update: (data: TypeEditCompanies) => {
     return request("/DonVi/" + data.id, {
       method: "PUT",
       data,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
     });
   },
 };

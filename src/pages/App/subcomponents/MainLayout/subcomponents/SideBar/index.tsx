@@ -5,6 +5,8 @@ import {
   ScheduleOutlined,
   BoxPlotOutlined,
   SolutionOutlined,
+  EyeOutlined,
+  BarChartOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import styles from "pages/App/subcomponents/MainLayout/subcomponents/SideBar/style.module.css";
@@ -16,9 +18,15 @@ import {
   COMPANIES,
   STUDENTS,
   EQUIPMENTS,
-  SCHEDULES,
   ROLE,
   PERMISSION,
+  FOLLOWPLANS,
+  STATISTIC_BY_COMPANY,
+  STATISTIC_BY_DILIGENCE,
+  SCHEDULESUPPER,
+  SCHEDULESYOURSELF,
+  SCHEDULESLOWER,
+  RESULT_PLAN,
 } from "routes/route.constant";
 
 type SubMenuItem = {
@@ -42,7 +50,7 @@ const menus: Array<MenuItem> = [
     icon: <PieChartOutlined />,
   },
   {
-    title: "Người dùng",
+    title: "Quản lý Người dùng",
     key: "user",
     icon: <TeamOutlined />,
     submenus: [
@@ -61,24 +69,13 @@ const menus: Array<MenuItem> = [
     ],
   },
   {
-    title: "Đơn vị",
+    title: "Quản lý Đơn vị",
     key: "company",
     icon: <BankOutlined />,
     submenus: [
       {
         title: "Danh sách đơn vị",
         path: COMPANIES,
-      },
-    ],
-  },
-  {
-    title: "Cán bộ",
-    key: "officer",
-    icon: <TeamOutlined />,
-    submenus: [
-      {
-        title: "Danh sách cán bộ",
-        path: USER,
       },
     ],
   },
@@ -92,7 +89,7 @@ const menus: Array<MenuItem> = [
         path: STUDENTS,
       },
       {
-        title: "Danh sách nhóm học viên",
+        title: "Kết quả rèn luyện",
         path: USER,
       },
     ],
@@ -114,8 +111,46 @@ const menus: Array<MenuItem> = [
     icon: <ScheduleOutlined />,
     submenus: [
       {
-        title: "Danh sách kế hoạch",
-        path: SCHEDULES,
+        title: "Cấp trên",
+        path: SCHEDULESUPPER,
+      },
+      {
+        title: "Cấp mình",
+        path: SCHEDULESYOURSELF,
+      },
+      {
+        title: "Cấp dưới",
+        path: SCHEDULESLOWER,
+      },
+    ],
+  },
+  {
+    title: "Quản lý thực hiện kế hoạch",
+    key: "followplan",
+    icon: <EyeOutlined />,
+    submenus: [
+      {
+        title: "Điểm danh",
+        path: FOLLOWPLANS,
+      },
+      {
+        title: "Kết quả thực hiện",
+        path: RESULT_PLAN,
+      },
+    ],
+  },
+  {
+    title: "Thống kê",
+    key: "statistic",
+    icon: <BarChartOutlined />,
+    submenus: [
+      {
+        title: "Theo chuyên cần",
+        path: STATISTIC_BY_DILIGENCE,
+      },
+      {
+        title: "Theo đơn vị",
+        path: STATISTIC_BY_COMPANY,
       },
     ],
   },

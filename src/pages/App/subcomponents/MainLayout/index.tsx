@@ -17,8 +17,6 @@ const MainLayout: FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("check");
-
     handleCheckToken();
   }, []);
 
