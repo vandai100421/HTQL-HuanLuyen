@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Button, Popconfirm, Row, Space, Table, Tag } from "antd";
+import { Button, Popconfirm, Row, Space, Table, Tag, message } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined, LinkOutlined } from "@ant-design/icons";
 import { useHookstate } from "@hookstate/core";
@@ -7,6 +7,12 @@ import scheduleStore from "pages/Schedules/store";
 import { TypeSchedule } from "constants/types/schedule.type";
 import { utils, writeFile } from "xlsx";
 import moment from "moment";
+import { followPlanApi } from "apis/followPlan";
+import { resultPlanApi } from "apis/resultPlan";
+import followPlanStore from "pages/FollowPlans/store";
+import resultPlanStore from "pages/ResultPlan/store";
+import { useNavigate } from "react-router-dom";
+import { FOLLOWPLANS, RESULT_PLAN } from "routes/route.constant";
 
 type Props = {
   changePage: (page: number, pageSize: number) => void;
@@ -20,6 +26,40 @@ const TableComponent: FC<Props> = ({
   handleSelectItem,
 }) => {
   const scheduleState = useHookstate(scheduleStore);
+  const followPlanState = useHookstate(followPlanStore);
+  const resultPlanState = useHookstate(resultPlanStore);
+  const navigate = useNavigate();
+
+  const handleCreateFollowPlan = async (id: number) => {
+    try {
+      await followPlanApi.createBuoiHoc(id);
+      followPlanState.merge({ id: id });
+      navigate(FOLLOWPLANS);
+      message.success("Tạo danh sách điểm danh thành công!");
+    } catch (error) {
+      message.error("Lỗi khi tạo danh sách điểm danh!");
+    }
+  };
+
+  const handleDetailFollowPlan = (id: number) => {
+    followPlanState.merge({ id: id });
+    navigate(FOLLOWPLANS);
+  };
+
+  const handleCreateResultPlan = async (id: number) => {
+    try {
+      await resultPlanApi.createKQ(id);
+      resultPlanState.merge({ id: id });
+      navigate(RESULT_PLAN);
+      message.success("Tạo danh sách thành công!");
+    } catch (error) {
+      message.error("Lỗi khi tạo danh sách!");
+    }
+  };
+  const handleDetailResultPlan = (id: number) => {
+    resultPlanState.merge({ id: id });
+    navigate(RESULT_PLAN);
+  };
 
   const columns: ColumnsType<TypeSchedule> = [
     {
@@ -54,6 +94,36 @@ const TableComponent: FC<Props> = ({
 
       render: (value: string) => (
         <Tag color="success">{moment(value).format("DD/MM/YYYY")}</Tag>
+      ),
+    },
+    {
+      title: "Điểm danh",
+      render: (_, record) => (
+        <>
+          {record.daTaoBH === 1 ? (
+            <Button
+              type="text"
+              onClick={() => handleDetailFollowPlan(record.id)}
+            >
+              Chi tiết
+            </Button>
+          ) : null}
+        </>
+      ),
+    },
+    {
+      title: "Kết quả",
+      render: (_, record) => (
+        <>
+          {record.daTaoKQ === 1 ? (
+            <Button
+              type="text"
+              onClick={() => handleDetailResultPlan(record.id)}
+            >
+              Chi tiết
+            </Button>
+          ) : null}
+        </>
       ),
     },
     // {
