@@ -60,9 +60,7 @@ const TableComponent = () => {
                 max={10}
                 min={1}
                 value={dataResult.current[index].ketQua}
-                onChange={(value) => {
-                  handleChangeItemKQ(value, record.id);
-                }}
+                onChange={(value) => handleChangeItemKQ(value, record.id)}
               />
             )}
           </>
@@ -72,20 +70,19 @@ const TableComponent = () => {
   ];
 
   const handleChangeItemKQ = async (value: number, idKq: number) => {
-    setSetsetting(!setsetting);
     for (let i = 0; i < dataResult.current.length; i++) {
       if (dataResult.current[i].ketQuaId === idKq) {
         dataResult.current[i].ketQua = value;
-        return;
+        break;
       }
     }
     const data: TypeUpdateResultPlan = {
       keHoachId: resultPlanState.value.id,
       details: dataResult.current,
     };
-    console.log(data);
     await resultPlanApi.updateListKQ(data);
     getAllResultPlan({ keHoachId: resultPlanState.value.id });
+    setSetsetting(!setsetting);
   };
 
   return (
