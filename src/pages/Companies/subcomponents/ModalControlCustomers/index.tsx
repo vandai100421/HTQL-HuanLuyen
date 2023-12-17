@@ -1,6 +1,14 @@
 import { useHookstate } from "@hookstate/core";
-import { Alert, DatePicker, Form, Input, Modal, TreeSelect } from "antd";
-import { TypeCompanies } from "constants/types/companies.type";
+import {
+  Alert,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Select,
+  TreeSelect,
+} from "antd";
+import { TypeCompanies, TypeLoaiDonVi } from "constants/types/companies.type";
 import { TypeCustomers } from "constants/types/customers.type";
 import { useFormik } from "formik";
 import moment from "moment";
@@ -9,6 +17,8 @@ import { FC, useEffect, useState } from "react";
 import * as Yup from "yup";
 
 const { RangePicker } = DatePicker;
+
+const { Option } = Select;
 
 type Props = {
   visible?: boolean;
@@ -38,12 +48,14 @@ const ModalControlCustomers: FC<Props> = ({
       ngayThanhLap: "",
       ngayGiaiTan: "",
       donViId: 1,
-      loaiDonViId: 0,
+      loaiDonViId: 1,
+      capDonViId: 1,
       trangThai: 0,
     },
     validationSchema: schemaEditDishType,
     onSubmit: (data) => {
       onSubmit(data);
+      formControl.resetForm();
     },
   });
 
@@ -60,7 +72,7 @@ const ModalControlCustomers: FC<Props> = ({
   };
 
   useEffect(() => {
-    if (visible && customers) {
+    if (customers) {
       const {
         id,
         tenDonVi,
@@ -69,6 +81,7 @@ const ModalControlCustomers: FC<Props> = ({
         donViId,
         loaiDonViId,
         trangThai,
+        capDonViId,
       } = customers;
       formControl.setValues({
         id,
@@ -77,14 +90,10 @@ const ModalControlCustomers: FC<Props> = ({
         ngayGiaiTan,
         donViId,
         loaiDonViId,
+        capDonViId,
         trangThai,
       });
     }
-  }, [customers, visible]);
-
-  // reset form after close
-  useEffect(() => {
-    if (!visible) formControl.resetForm();
   }, [visible]);
 
   return (
@@ -132,15 +141,22 @@ const ModalControlCustomers: FC<Props> = ({
           />
         </Form.Item>
         <Form.Item label="Loại đơn vị">
-          <Input
-            name="loaiDonViId"
-            placeholder="Nhập số điện thoại khách hàng"
+          {formControl.values.loaiDonViId}
+          <Select
             value={formControl.values.loaiDonViId}
-            onChange={formControl.handleChange}
-            onBlur={formControl.handleBlur}
-          />
+            onChange={(value) =>
+              formControl.setFieldValue("loaiDonViId", value)
+            }
+          >
+            {companiesState.value.loaiDonVis.map((item) => (
+              <Option value={item.id} key={item.id}>
+                {item.tenLoaiDv}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
-        <Form.Item label="Ngày sinh" name="ngaySinh">
+
+        <Form.Item label="Ngày thành lập" name="ngayThanhLap">
           <DatePicker
             showTime={{ showSecond: false }}
             format="DD/MM/YYYY"

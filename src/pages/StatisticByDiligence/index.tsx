@@ -6,9 +6,10 @@ import companiesStore, { fetchCompaniesList } from "pages/Companies/store";
 import { useHookstate } from "@hookstate/core";
 import { TypeCompanies } from "constants/types/companies.type";
 
-import { LineChart } from "./subcomponents/Linear";
 import StatisticItem from "./subcomponents/StatisticItem";
 import BarChart from "./subcomponents/Bar";
+import { Pie } from "react-chartjs-2";
+import PieChar from "./subcomponents/PieChar";
 
 const { Option } = Select;
 
@@ -16,13 +17,15 @@ const StatisticByDiligence = () => {
   const companiesState = useHookstate(companiesStore);
   const statisticState = useHookstate(statisicStore);
 
+  const [data, setData] = useState();
+
   const childCompanies = companiesState.value.companies.filter(
     (item: TypeCompanies) =>
       item.donViId === Number(window.sessionStorage.getItem("donViId")) ||
       item.id === Number(window.sessionStorage.getItem("donViId"))
   );
 
-  const [selectedCompany, setSelectedCompany] = useState();
+  const [selectedCompany, setSelectedCompany] = useState<number>();
   // Filter
   useEffect(() => {
     getChuyenCanByLevelLower();
@@ -55,12 +58,17 @@ const StatisticByDiligence = () => {
           chuyenCan: item.chuyenCan,
           soBuoiHoc: item.soBuoiHoc,
         });
+        console.log(dataRes);
+        
       }
     });
     return dataRes;
   };
-
-  const data = statisticBarChart();
+  const handleSelectCompany = (value: number) => {
+    const result = statisticBarChart();
+    setData(result);
+    setSelectedCompany(value);
+  };
 
   return (
     <>
@@ -77,7 +85,7 @@ const StatisticByDiligence = () => {
                 <Select
                   style={{ width: 300 }}
                   value={selectedCompany}
-                  onChange={setSelectedCompany}
+                  onChange={handleSelectCompany}
                 >
                   {childCompanies.map((item) => (
                     <Option value={item.id} key={item.id}>
@@ -89,26 +97,30 @@ const StatisticByDiligence = () => {
             </Form>
           </Space>
         </div>
-        <Row gutter={[16, 12]}>
-          <Col span={12}>
-            <StatisticItem
-              title={"Doanh thu trong ngày"}
-              // value={dashBoardState.today_revenue.get().toString()}
-              unit="VNĐ"
-            />
-          </Col>
-          <Col span={12}>
-            <StatisticItem
-              title={"Số khách hàng"}
-              // value={dashBoardState.customerNum.get().toString()}
-              unit="KH"
-            />
-          </Col>
-        </Row>
-        <Row>
-          {/* <LineChart /> */}
-          <BarChart data={data} />
-        </Row>
+        {data && (
+          <>
+            {/* <Row gutter={[16, 12]}>
+              <Col span={12}>
+                <StatisticItem
+                  title={"Doanh thu trong ngày"}
+                  // value={dashBoardState.today_revenue.get().toString()}
+                  unit="VNĐ"
+                />
+              </Col>
+              <Col span={12}>
+                <StatisticItem
+                  title={"Số khách hàng"}
+                  // value={dashBoardState.customerNum.get().toString()}
+                  unit="KH"
+                />
+              </Col>
+            </Row> */}
+            <Row>
+              {/* <LineChart /> */}
+              <PieChar data={data} />
+            </Row>
+          </>
+        )}
       </Card>
     </>
   );

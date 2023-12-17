@@ -6,6 +6,7 @@ export type TypeCompanies = {
   ngayGiaiTan: string;
   donViId: number;
   loaiDonViId: number;
+  capDonViId: number;
   trangThai: number;
 };
 
@@ -20,5 +21,11 @@ export type TypeEditCompanies = {
   ngayGiaiTan: string;
   donViId: number;
   loaiDonViId: number;
+  capDonViId: number;
   trangThai: number;
+};
+
+export type TypeLoaiDonVi = {
+  id: number;
+  tenLoaiDv: string;
 };

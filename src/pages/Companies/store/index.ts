@@ -3,11 +3,13 @@ import { companyAPI } from "apis/company";
 import {
   GetCompaniesParams,
   TypeCompanies,
+  TypeLoaiDonVi,
 } from "constants/types/companies.type";
 
 type CompaniesState = {
   companies: Array<TypeCompanies>;
   companiesTree: Array<any>;
+  loaiDonVis: Array<TypeLoaiDonVi>;
   limit?: number;
   page?: number;
   total: number;
@@ -17,6 +19,7 @@ type CompaniesState = {
 const initialState: CompaniesState = {
   companies: [],
   companiesTree: [],
+  loaiDonVis: [],
   limit: 10,
   page: 1,
   total: 0,
@@ -97,5 +100,16 @@ function convertDonVi(donVi: any, tenCha: any) {
 
   return result;
 }
+
+export const getAllLoaiDonVi = async () => {
+  try {
+    const dataRes = await companyAPI.getAllLoaiDonVi();
+    companiesStore.merge({
+      loaiDonVis: dataRes.data.data,
+    });
+  } catch (error) {
+    console.error("Lối khi lấy loại đơn vị");
+  }
+};
 
 export default companiesStore;

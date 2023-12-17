@@ -10,7 +10,11 @@ import {
   TypeEditCustomers,
   TypeCustomers,
 } from "constants/types/customers.type";
-import { fetchCompaniesList, fetchCompaniesTree } from "pages/Companies/store";
+import {
+  fetchCompaniesList,
+  fetchCompaniesTree,
+  getAllLoaiDonVi,
+} from "pages/Companies/store";
 import {
   TypeCompanies,
   TypeEditCompanies,
@@ -21,6 +25,7 @@ const Companies = () => {
   useEffect(() => {
     fetchCompaniesList({ q: "" });
     fetchCompaniesTree();
+    getAllLoaiDonVi();
   }, []);
 
   const formFilter = useFormik({
