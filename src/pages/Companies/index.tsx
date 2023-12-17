@@ -91,7 +91,7 @@ const Companies = () => {
   // start delete
   const handleConfirmDeleteCustomers = async (id: number) => {
     try {
-      // await customersApi.delete(id);
+      await companyAPI.delete(id);
       message.success("Xóa khách hàng thành công");
       const params = {
         ...(formFilter.values as any),

@@ -42,6 +42,10 @@ const Login = () => {
             "donViId",
             dataRes.data.data.user.donViId
           );
+          window.sessionStorage.setItem(
+            "vaiTro",
+            dataRes.data.data.user.vaiTro
+          );
           navigate(DEFAULT);
         } else {
           message.error("Tên người dùng hoặc mật khẩu không chính xác.");

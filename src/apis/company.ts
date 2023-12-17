@@ -46,6 +46,15 @@ export const companyAPI = {
     });
   },
 
+  delete: (id: number) => {
+    return request("/DonVi/" + id, {
+      method: "DELETE",
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
+    });
+  },
   getAllLoaiDonVi: () => {
     return request("/LoaiDonVi", {
       method: "GET",
