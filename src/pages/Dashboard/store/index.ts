@@ -23,17 +23,14 @@ export default dashBoardStore;
 
 export const getTotalCustomers = async () => {
   try {
-    const dataRes = await statisticApi.getChuyenCanByLevelYourself();
-    dashBoardStore.customerNum.set(dataRes.data.customerNum);
+    const dataRes = await statisticApi.getChuyenCanByLevelLower();
   } catch (error) {
     message.error("Lối khi lấy thông tin tổng số khách hàng trong ngày");
   }
 };
 export const getTodayRevenue = async () => {
   try {
-    const params: ParamsStatistic = { id: 1 };
-    const dataRes = await statisticApi.getChuyenCanByLevelLower(params);
-    dashBoardStore.today_revenue.set(dataRes.data.today_revenue);
+    const dataRes = await statisticApi.getChuyenCanByLevelLower();
   } catch (error) {
     message.error("Lối khi lấy thông tin tổng doanh thu trong ngày");
   }
@@ -41,9 +38,7 @@ export const getTodayRevenue = async () => {
 
 export const getDishesFrequency = async () => {
   try {
-    const dataRes = await statisticApi.getChuyenCanByLevelYourself();
-    const _data = dataRes.data.slice(0, 5);
-    dashBoardStore.topDishes.set(_data);
+    const dataRes = await statisticApi.getChuyenCanByLevelLower();
   } catch (error) {
     message.error("Lối khi lấy thông tin tổng doanh thu trong ngày");
   }
@@ -51,10 +46,7 @@ export const getDishesFrequency = async () => {
 
 export const getStaffFrequency = async () => {
   try {
-    const dataRes = await statisticApi.getChuyenCanByLevelYourself();
-    console.log(dataRes.data);
-
-    //   dashBoardStore.topDishes.set(dataRes.data.today_revenue);
+    const dataRes = await statisticApi.getChuyenCanByLevelLower();
   } catch (error) {
     message.error("Lối khi lấy thông tin tổng doanh thu trong ngày");
   }

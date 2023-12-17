@@ -15,15 +15,10 @@ const initialState: scheduleState = {
 
 const statisicStore = createState(initialState);
 
-export const getChuyenCanByLevelYourself = async (params?: ParamsStatistic) => {
+export const getChuyenCanByLevelLower = async (params?: ParamsStatistic) => {
   try {
     statisicStore.isLoading.set(true);
-    const _params = {
-      ...params,
-      keHoachId: params?.keHoachId ? params.keHoachId : 16,
-    };
-
-    const dataRes = await statisticApi.getChuyenCanByLevelYourself(_params);
+    const dataRes = await statisticApi.getChuyenCanByLevelLower(params);
 
     statisicStore.set({
       ccData: dataRes.data.data,

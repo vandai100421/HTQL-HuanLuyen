@@ -1,43 +1,12 @@
 import { request } from "apis/base";
 
 export type ParamsStatistic = {
-  keHoachId?: number;
-  id?: number;
+  donViId?: number;
 };
 
 export const statisticApi = {
-  getChuyenCanByLevelYourself: (params?: ParamsStatistic) => {
-    return request("/ThongKe/GetChuyenCanByLevelYourself", {
-      method: "GET",
-      params,
-      headers: {
-        Authorization:
-          "Bearer " + String(window.sessionStorage.getItem("access_token")),
-      },
-    });
-  },
-  getChuyenCanByLevelLower: (params: ParamsStatistic) => {
-    return request("/ThongKe/GetChuyenCanByLevelLower/" + params.id, {
-      method: "GET",
-      params,
-      headers: {
-        Authorization:
-          "Bearer " + String(window.sessionStorage.getItem("access_token")),
-      },
-    });
-  },
-  getKTLevelYourself: (params: ParamsStatistic) => {
-    return request("/ThongKe/GetKTLevelYourself/" + params.id, {
-      method: "GET",
-      params,
-      headers: {
-        Authorization:
-          "Bearer " + String(window.sessionStorage.getItem("access_token")),
-      },
-    });
-  },
-  getKTLevelLower: (params: ParamsStatistic) => {
-    return request("/ThongKe/GetKTLevelLower/" + params.id, {
+  getChuyenCanByLevelLower: (params?: ParamsStatistic) => {
+    return request("/ThongKe/GetChuyenCanByLevelLower", {
       method: "GET",
       params,
       headers: {
@@ -47,7 +16,7 @@ export const statisticApi = {
     });
   },
   getKTDVByLevelLower: (params: ParamsStatistic) => {
-    return request("/ThongKe/GetKTDVByLevelLower/" + params.id, {
+    return request("/ThongKe/GetKTDVByLevelLower", {
       method: "GET",
       params,
       headers: {

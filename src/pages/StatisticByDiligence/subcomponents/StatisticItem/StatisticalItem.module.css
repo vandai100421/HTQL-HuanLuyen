@@ -1,0 +1,23 @@
+.content {
+  background-color: bisque;
+  border-radius: 10px;
+  height: 200px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.textMedium {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.statistic {
+    padding-left: 16px;
+}
+
+.number {
+    font-size: 32px;
+    font-weight: 600;
+}
