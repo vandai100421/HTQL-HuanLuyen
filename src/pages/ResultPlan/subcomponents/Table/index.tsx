@@ -1,107 +1,110 @@
-import React, { useState } from "react";
-import { Checkbox, Table } from "antd";
-import type { ColumnsType } from "antd/es/table";
-
-interface DataType {
-  key: React.Key;
-  name: string;
-  age: number;
-  address: string;
-}
-
-const data: any = [
-  {
-    fullname: "Nguyễn Văn A",
-    buoi1: true,
-    buoi2: false,
-    buoi3: true,
-    buoi4: true,
-    buoi5: true,
-    buoi6: true,
-  },
-  {
-    fullname: "Nguyễn Văn B",
-    buoi1: true,
-    buoi2: false,
-    buoi3: true,
-    buoi4: false,
-    buoi5: true,
-    buoi6: true,
-  },
-];
-
-const columns: ColumnsType<DataType> = [
-  {
-    title: "Full Name",
-    width: 200,
-    dataIndex: "fullname",
-    key: "name",
-    fixed: "left",
-  },
-  {
-    title: "Buổi 1",
-    dataIndex: "buoi1",
-    key: "buoi1",
-    render: (value: boolean) => (
-      <>
-        <Checkbox value={value} />
-      </>
-    ),
-    align: "center",
-  },
-  {
-    title: "Buổi 2",
-    dataIndex: "buoi2",
-    key: "buoi2",
-    render: (value: boolean) => (
-      <>
-        <Checkbox value={value} />
-      </>
-    ),
-    align: "center",
-  },
-  {
-    title: "Buổi 3",
-    dataIndex: "buoi3",
-    key: "buoi3",
-    render: (value: boolean) => (
-      <>
-        <Checkbox value={value} />
-      </>
-    ),
-    align: "center",
-  },
-  {
-    title: "Buổi 4",
-    dataIndex: "buoi4",
-    key: "buoi4",
-    render: (value: boolean) => (
-      <>
-        <Checkbox value={value} />
-      </>
-    ),
-    align: "center",
-  },
-  {
-    title: "Action",
-    key: "operation",
-    fixed: "right",
-    width: 100,
-    render: () => <a>action</a>,
-    align: "center",
-  },
-];
+import React, { useRef, useState } from "react";
+import { Button, InputNumber, Row, Table, message } from "antd";
+import { useHookstate } from "@hookstate/core";
+import resultPlanStore from "../../store";
+import {
+  TypeItemUpdateResultPlan,
+  TypeUpdateResultPlan,
+} from "constants/types/resultPlan.type";
+import { resultPlanApi } from "apis/resultPlan";
 
 const TableComponent = () => {
-  const [fixedTop, setFixedTop] = useState(false);
+  const resultPlanState = useHookstate(resultPlanStore);
+  const dataResult = useRef<Array<TypeItemUpdateResultPlan>>([]);
+
+  const [setsetting, setSetsetting] = useState(false);
+
+  for (let i = 0; i < resultPlanState.value.total; i++) {
+    const newObj: TypeItemUpdateResultPlan = {
+      ketQua: resultPlanState.value.resultPlans
+        ? resultPlanState.value.resultPlans[i].ketQua
+        : null,
+      ketQuaId: resultPlanState.value.resultPlans
+        ? resultPlanState.value.resultPlans[i].id
+        : null,
+    };
+    dataResult.current.push(newObj);
+  }
+
+  const columns: any = [
+    {
+      title: "Họ và tên",
+      width: 200,
+      dataIndex: "tenHocVien",
+      key: "name",
+    },
+    {
+      title: "Mã học viên",
+      dataIndex: "hocVienId",
+      key: "hocVienId",
+    },
+    {
+      title: "Kết quả",
+      dataIndex: "ketQua",
+      key: "kq",
+      render: (value: number, record: any, index: number) => {
+        return (
+          <>
+            {setsetting ? (
+              <InputNumber
+                max={10}
+                min={1}
+                value={dataResult.current[index].ketQua}
+                onChange={(value) => {
+                  handleChangeItemKQ(value, record.id);
+                }}
+              />
+            ) : (
+              <InputNumber
+                max={10}
+                min={1}
+                value={dataResult.current[index].ketQua}
+                onChange={(value) => {
+                  handleChangeItemKQ(value, record.id);
+                }}
+              />
+            )}
+          </>
+        );
+      },
+    },
+  ];
+
+  const handleChangeItemKQ = (value: number, idKq: number) => {
+    setSetsetting(!setsetting);
+    for (let i = 0; i < dataResult.current.length; i++) {
+      if (dataResult.current[i].ketQuaId === idKq) {
+        dataResult.current[i].ketQua = value;
+        return;
+      }
+    }
+  };
+
+  const handleFinish = async () => {
+    try {
+      const data: TypeUpdateResultPlan = {
+        keHoachId: resultPlanState.value.id,
+        details: dataResult.current,
+      };
+      console.log(data);
+      await resultPlanApi.updateListKQ(data);
+      message.success("Cập nhật điểm danh thành công");
+    } catch (error) {
+      message.error("Lối khi cập nhật điểm danh");
+    }
+  };
 
   return (
-    <Table
-      columns={columns}
-      dataSource={data}
-      scroll={{ x: 1500 }}
-      sticky={{ offsetHeader: 64 }}
-    />
+    <>
+      {resultPlanState.value.id !== 0 && (
+        <Row justify="end" style={{ padding: "12px 0" }}>
+          <Button type="primary" onClick={handleFinish}>
+            Cập nhật
+          </Button>
+        </Row>
+      )}
+      <Table columns={columns} dataSource={resultPlanState.value.resultPlans} />
+    </>
   );
 };
 
