@@ -1,12 +1,11 @@
 import { request } from "apis/base";
-import {
-  TypeUpdateFollowPlan,
-} from "constants/types/followPlan.type";
+import { ParamsGetAllResultPlan, TypeUpdateResultPlan } from "constants/types/resultPlan.type";
 
-export const followPlanApi = {
-  getListDD: (id: number) => {
-    return request("/BH_HV/GetAllByKHId/" + id, {
+export const resultPlanApi = {
+  getListKQ: (params?: ParamsGetAllResultPlan) => {
+    return request("/KetQuaHL/search", {
       method: "GET",
+      params,
       headers: {
         Authorization:
           "Bearer " + String(window.sessionStorage.getItem("access_token")),
@@ -14,8 +13,8 @@ export const followPlanApi = {
     });
   },
 
-  updateListDD: (data: TypeUpdateFollowPlan) => {
-    return request("/BH_HV", {
+  updateListKQ: (data: TypeUpdateResultPlan) => {
+    return request("/KetQuaHL", {
       method: "PUT",
       data,
       headers: {
@@ -25,8 +24,8 @@ export const followPlanApi = {
     });
   },
 
-  createBuoiHoc: (id: number) => {
-    return request("/BuoiHoc/CreateByKHId/" + id, {
+  createKQ: (id: number) => {
+    return request("/KetQuaHL/CreateByKHId/" + id, {
       method: "GET",
       headers: {
         Authorization:

@@ -9,8 +9,10 @@ import { utils, writeFile } from "xlsx";
 import moment from "moment";
 import { followPlanApi } from "apis/followPlan";
 import { useNavigate } from "react-router-dom";
-import { FOLLOWPLANS } from "routes/route.constant";
+import { FOLLOWPLANS, RESULT_PLAN } from "routes/route.constant";
 import followPlanStore from "pages/FollowPlans/store";
+import resultPlanStore from "pages/ResultPlan/store";
+import { resultPlanApi } from "apis/resultPlan";
 
 type Props = {
   changePage: (page: number, pageSize: number) => void;
@@ -25,6 +27,7 @@ const TableComponent: FC<Props> = ({
 }) => {
   const scheduleState = useHookstate(scheduleStore);
   const followPlanState = useHookstate(followPlanStore);
+  const resultPlanState = useHookstate(resultPlanStore);
   const navigate = useNavigate();
 
   const handleCreateFollowPlan = async (id: number) => {
@@ -41,6 +44,21 @@ const TableComponent: FC<Props> = ({
   const handleDetailFollowPlan = (id: number) => {
     followPlanState.merge({ id: id });
     navigate(FOLLOWPLANS);
+  };
+
+  const handleCreateResultPlan = async (id: number) => {
+    try {
+      await resultPlanApi.createKQ(id);
+      resultPlanState.merge({ id: id });
+      navigate(RESULT_PLAN);
+      message.success("Tạo danh sách thành công!");
+    } catch (error) {
+      message.error("Lỗi khi tạo danh sách!");
+    }
+  };
+  const handleDetailResultPlan = (id: number) => {
+    resultPlanState.merge({ id: id });
+    navigate(RESULT_PLAN);
   };
 
   const columns: ColumnsType<TypeSchedule> = [
@@ -105,11 +123,16 @@ const TableComponent: FC<Props> = ({
       render: (_, record) => (
         <>
           {record.daTaoKQ === 1 ? (
-            <Button type="text">Chi tiết</Button>
+            <Button
+              type="text"
+              onClick={() => handleDetailResultPlan(record.id)}
+            >
+              Chi tiết
+            </Button>
           ) : (
             <Button
               type="text"
-              onClick={() => handleCreateFollowPlan(record.id)}
+              onClick={() => handleCreateResultPlan(record.id)}
             >
               Tạo mới
             </Button>
