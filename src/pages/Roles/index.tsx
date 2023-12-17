@@ -1,164 +1,144 @@
-import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
-import { Button, Card, Input, message, Space } from "antd";
-import { roleApi } from "apis/role";
+import React, { useEffect, useState } from "react";
+import TableComponent from "pages/Schedules/subcomponents/Table";
+import { Button, Card, Input, Space, message } from "antd";
 import CardTitle from "components/CardTitle";
-import { CreateRoleData, EditRoleData, Role } from "constants/types/role.type";
+import ModalControl from "pages/Schedules/subcomponents/ModalControl";
+import { SearchOutlined, PlusOutlined } from "@ant-design/icons";
 import { useFormik } from "formik";
-import moment from "moment";
-import styles from "pages/Roles/Roles.module.css";
-import ModalControlRole from "pages/Roles/subcomponents/ModalControlRole";
-import TableRole from "pages/Roles/subcomponents/TableRole";
-import { useEffect, useState } from "react";
-// hookstate
-import { fetchRoleList } from "pages/Roles/store";
+import { getAllRole } from "./store";
+import { scheduleApi } from "apis/schedule";
+import { TypeEditSchedule, TypeSchedule } from "constants/types/schedule.type";
+import { CommonGetAllParams } from "constants/types/common.type";
+import { fetchCompaniesTree } from "pages/Companies/store";
 
 const Roles = () => {
+  // Filter
   useEffect(() => {
-    fetchRoleList();
+    getAllRole();
+    fetchCompaniesTree();
   }, []);
 
-  const formFilter = useFormik({
+  const formFilter = useFormik<CommonGetAllParams>({
     initialValues: {
-      name: "",
-      code: "",
-      status: "",
-      start_time: null,
-      end_time: null,
+      q: "",
+      page: 1,
+      limit: 10,
     },
-    onSubmit: (data: any) => {
-      fetchRoleList(data);
+    onSubmit: (data: CommonGetAllParams) => {
+      getAllRole(data);
     },
   });
 
-  const handleChangePage = (page: number, pageSize: number) => {
-    const params = {
-      ...(formFilter.values as any),
-      page,
-      limit: pageSize,
-    };
-    fetchRoleList(params);
-  };
-
-  const handleChangeFilterDate = (dates: any, dateStrings: [any, any]) => {
-    formFilter.setValues({
-      ...formFilter.values,
-      start_time: dateStrings[0],
-      end_time: dateStrings[1],
-    });
-  };
-
-  // Add Role
-  const [visibleAddRole, setVisibleAddRole] = useState<boolean>(false);
-  const [addRoleError, setAddRoleError] = useState<string>("");
-
-  const handleSubmitAddRole = async (data: CreateRoleData) => {
+  // Add
+  const [visibleModalAdd, setVisibleModalAdd] = useState<boolean>(false);
+  const handleSubmitModalAdd = async (data: TypeEditSchedule) => {
     try {
-      await roleApi.create(data);
-      setAddRoleError("");
-      message.success("Thêm mới nhóm người dùng thành công.");
-      formFilter.submitForm();
-      setVisibleAddRole(false);
-    } catch (error: any) {
-      setAddRoleError("Lỗi khi thêm mới người dùng");
+      await scheduleApi.create(data);
+      setVisibleModalAdd(false);
+      getAllRole();
+      message.success("Thêm mới dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalAdd(false);
+      message.error("Thêm mới dữ liệu thất bại");
     }
   };
 
-  // Edit role
-  const [visibleEditRole, setVisibleEditRole] = useState<boolean>(false);
-  const [roleSelected, setRoleSelected] = useState<Role>();
+  // Edit
+  const [visibleModalEdit, setVisibleModalEdit] = useState<boolean>(false);
+  const [itemSeleted, setItemSelected] = useState<TypeSchedule>();
 
-  const [editRoleError, setEditRoleError] = useState<string>("");
-
-  const handleOpenEditRole = (role: Role) => {
-    setRoleSelected(role);
-    setVisibleEditRole(true);
+  const handleSelectItem = (data: TypeSchedule) => {
+    setItemSelected(data);
+    setVisibleModalEdit(true);
   };
 
-  const handleSubmitEditRole = async (data: EditRoleData) => {
+  const handleSubmitModalEdit = async (data: TypeEditSchedule) => {
     try {
-      if (!roleSelected) return;
-      await roleApi.update(data);
-      setEditRoleError("");
-      message.success("Cập nhật nhóm người dùng thành công.");
-      formFilter.submitForm();
-      setVisibleEditRole(false);
-    } catch (error: any) {
-      setEditRoleError(error.response.data.error.message);
+      await scheduleApi.update(data);
+      console.log(data);
+      setVisibleModalEdit(false);
+      getAllRole();
+      message.success("Cập nhật dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalEdit(false);
+      message.error("Cập nhật dữ liệu thất bại");
     }
   };
 
   // start delete
-  const handleConfirmDeleteRole = async (id: number) => {
+  const handleConfirmDeleteItem = async (id: number) => {
     try {
-      await roleApi.delete(id);
-      message.success("Xóa nhóm quyền thành công");
-      const params = {
-        ...(formFilter.values as any),
-      };
-      fetchRoleList(params);
-    } catch (error: any) {
-      message.error(error.response.data.error.message);
+      await scheduleApi.delete(id);
+      getAllRole();
+      message.success("Xóa dữ liệu thành công");
+    } catch (error) {
+      setVisibleModalEdit(false);
+      message.error("Xóa dữ liệu thất bại");
     }
   };
   // end delete
 
+  const handleChangePage = (page: number, pageSize: number) => {
+    getAllRole({
+      page: page,
+      limit: pageSize,
+    });
+  };
+
   return (
     <>
-      <ModalControlRole
-        visible={visibleAddRole}
-        onCancel={() => setVisibleAddRole(false)}
-        onSubmit={handleSubmitAddRole}
+      <ModalControl
+        visible={visibleModalAdd}
+        onCancel={() => setVisibleModalAdd(false)}
+        onSubmit={handleSubmitModalAdd}
         okText="Thêm"
-        error={addRoleError}
       />
-      <ModalControlRole
-        visible={visibleEditRole}
-        onCancel={() => setVisibleEditRole(false)}
-        role={roleSelected}
-        okText="Cập nhật"
-        onSubmit={handleSubmitEditRole}
-        error={editRoleError}
+      <ModalControl
+        visible={visibleModalEdit}
+        onCancel={() => setVisibleModalEdit(false)}
+        onSubmit={handleSubmitModalEdit}
+        data={itemSeleted}
+        okText="Sửa"
       />
-      <div className={styles.wrapper}>
-        <Card bordered={false}>
-          <CardTitle
-            title="Quản lý nhóm quyền"
-            subtitle="Tổng hợp nhóm quyền người dùng trong hệ thống"
-          />
+      <Card>
+        <CardTitle
+          title="Danh sách nhóm"
+          subtitle="Thông tin về nhóm người dùng"
+        />
 
-          <div className={styles.filter}>
-            <Space>
-              <Input
-                placeholder="Tên nhóm quyền"
-                suffix={<SearchOutlined />}
-                name="name"
-                value={formFilter.values.name}
-                onChange={formFilter.handleChange}
-                allowClear
-              />
-              <Button type="primary" onClick={formFilter.submitForm}>
-                Tìm kiếm
-              </Button>
-            </Space>
-          </div>
-          {formFilter.values.status !== "deleted" && (
-            <div className={styles.action}>
-              <Button
-                icon={<PlusOutlined />}
-                type="primary"
-                onClick={() => setVisibleAddRole(true)}
-              >
-                Tạo mới
-              </Button>
-            </div>
-          )}
-          <TableRole
-            onChangePage={handleChangePage}
-            onClickEditRole={handleOpenEditRole}
-            onConfirmDeleteRole={handleConfirmDeleteRole}
+        <div>
+          <Space>
+            <Input
+              placeholder="Tìm kiếm theo tên"
+              suffix={<SearchOutlined />}
+              name="q"
+              value={formFilter.values.q}
+              onChange={formFilter.handleChange}
+              onPressEnter={formFilter.submitForm}
+              allowClear
+            />
+            <Button type="primary" onClick={formFilter.submitForm}>
+              Tìm kiếm
+            </Button>
+          </Space>
+        </div>
+        <Button
+          icon={<PlusOutlined />}
+          type="primary"
+          onClick={() => setVisibleModalAdd(true)}
+          style={{ marginBottom: 16, float: "right" }}
+        >
+          Tạo mới
+        </Button>
+
+        <div>
+          <TableComponent
+            changePage={handleChangePage}
+            handleSelectItem={handleSelectItem}
+            handleConfirmDeleteItem={handleConfirmDeleteItem}
           />
-        </Card>
-      </div>
+        </div>
+      </Card>
     </>
   );
 };

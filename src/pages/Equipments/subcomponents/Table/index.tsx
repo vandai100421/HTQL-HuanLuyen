@@ -1,11 +1,12 @@
 import React, { FC } from "react";
-import { Button, Popconfirm, Space, Table, Tag } from "antd";
+import { Button, Popconfirm, Row, Space, Table, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { TypeEquipment } from "constants/types/equipment.type";
 import { getTinhTrang } from "pages/Common/store";
 import { useHookstate } from "@hookstate/core";
 import equipmentStore from "pages/Equipments/store";
+import { utils, writeFile } from "xlsx";
 
 type Props = {
   changePage: (page: number, pageSize: number) => void;
@@ -73,6 +74,13 @@ const TableComponent: FC<Props> = ({
     },
   ];
 
+  const handleExportFile = () => {
+    const wb = utils.book_new();
+    const ws = utils.json_to_sheet(equipmentState.equipments.get());
+    utils.book_append_sheet(wb, ws, "Equipments");
+    writeFile(wb, "Danh Sach Trang thiết bị.xlsx");
+  };
+
   return (
     <>
       <Table
@@ -87,6 +95,13 @@ const TableComponent: FC<Props> = ({
           onChange: changePage,
         }}
       />
+      {equipmentState.total.get() > 0 && (
+        <Row justify="end" style={{ padding: "10px 0 0 0" }}>
+          <Button type="primary" onClick={handleExportFile}>
+            Export File
+          </Button>
+        </Row>
+      )}
     </>
   );
 };

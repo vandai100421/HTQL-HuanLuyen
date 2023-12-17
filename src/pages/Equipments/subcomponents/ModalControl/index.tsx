@@ -69,6 +69,7 @@ const ModalControl: FC<Props> = ({
         donViId,
       });
     }
+    
   }, [visible]);
 
   return (

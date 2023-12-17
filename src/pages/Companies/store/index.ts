@@ -7,7 +7,7 @@ type CompaniesState = {
   companiesTree: Array<any>;
   limit?: number;
   page?: number;
-  // total: number;
+  total: number;
   isLoadingGetAllCompanies: boolean;
 };
 
@@ -16,7 +16,7 @@ const initialState: CompaniesState = {
   companiesTree: [],
   limit: 10,
   page: 1,
-  // total: 0,
+  total: 0,
   isLoadingGetAllCompanies: true,
 };
 
@@ -41,9 +41,9 @@ export const fetchCompaniesList = async (params?: GetCompaniesParams) => {
     const dataRes = await companyAPI.getAll(_params);
     companiesStore.merge({
       companies: dataRes.data.data,
-      // page: dataRes.data.result.page,
-      // limit: dataRes.data.result.limit,
-      // total: dataRes.data.result.totalDocs,
+      page: dataRes.data.page,
+      limit: dataRes.data.limit,
+      total: dataRes.data.total,
       isLoadingGetAllCompanies: false,
     });
   } catch (error) {

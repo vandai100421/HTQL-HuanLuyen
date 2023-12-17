@@ -25,9 +25,8 @@ const { Option } = Select;
 type Props = {
   visible?: boolean;
   onCancel: () => void;
-  students?: TypeStudents;
+  data?: any;
   onSubmit: (data: any) => void;
-  error?: string;
   okText: string;
 };
 
@@ -38,9 +37,8 @@ const schemaEditStudent = Yup.object().shape({
 const ModalControlStudent: FC<Props> = ({
   visible,
   onCancel,
-  students,
+  data,
   onSubmit,
-  error,
   okText,
 }) => {
   const formControlStudent = useFormik({
@@ -49,7 +47,7 @@ const ModalControlStudent: FC<Props> = ({
       maHocVien: "",
       tenHocVien: "",
       gioiTinh: 0,
-      donViId: 1,
+      donViId: Number(window.sessionStorage.getItem("donViId")),
       capBacId: 0,
       chucVuId: 0,
       ngaySinh: "",
@@ -59,33 +57,29 @@ const ModalControlStudent: FC<Props> = ({
     validationSchema: schemaEditStudent,
     onSubmit: (data) => {
       onSubmit(data);
+      formControlStudent.resetForm();
     },
   });
 
-  const companiesState = useHookstate(companiesStore);
   const commonState = useHookstate(commonStore);
 
-  const changeCompany = (newValue: string) => {
-    formControlStudent.setFieldValue("donViId", newValue);
-  };
-
-  const handleNgaySinh = (data: any, dateStrings: string) => {
+  const handleNgaySinh = (data: any) => {
     const timeData = moment(data).format("YYYY-MM-DDTHH:mm:ss.SSSZ");
     formControlStudent.setFieldValue("ngaySinh", timeData);
   };
 
-  const handleChangeGioiTinh = (value: string) => {
+  const handleChangeGioiTinh = (value: number) => {
     formControlStudent.setFieldValue("gioiTinh", value);
   };
-  const handleChangeCapBac = (value: string) => {
+  const handleChangeCapBac = (value: number) => {
     formControlStudent.setFieldValue("capBacId", value);
   };
-  const handleChangeChucVu = (value: string) => {
+  const handleChangeChucVu = (value: number) => {
     formControlStudent.setFieldValue("chucVuId", value);
   };
 
   useEffect(() => {
-    if (visible && students) {
+    if (data) {
       const {
         id,
         maHocVien,
@@ -97,7 +91,7 @@ const ModalControlStudent: FC<Props> = ({
         queQuan,
         soDienThoai,
         donViId,
-      } = students;
+      } = data;
 
       formControlStudent.setValues({
         id,
@@ -112,15 +106,7 @@ const ModalControlStudent: FC<Props> = ({
         donViId,
       });
     }
-    fetchCompaniesTree();
     fetchCommon();
-  }, [students, visible]);
-
-  console.log(formControlStudent.values.capBacId.toString());
-
-  // reset form after close
-  useEffect(() => {
-    if (!visible) formControlStudent.resetForm();
   }, [visible]);
 
   return (
@@ -129,12 +115,8 @@ const ModalControlStudent: FC<Props> = ({
       onCancel={onCancel}
       okText={okText}
       onOk={formControlStudent.submitForm}
-      confirmLoading={formControlStudent.isSubmitting}
     >
-      {error && (
-        <Alert message={error} type="error" style={{ marginBottom: 16 }} />
-      )}
-      <Form layout="vertical" onFinish={formControlStudent.handleSubmit}>
+      <Form layout="vertical">
         <Form.Item
           label="Tên học viên"
           validateStatus={
@@ -159,39 +141,17 @@ const ModalControlStudent: FC<Props> = ({
           />
         </Form.Item>
 
-        <Form.Item
-          label="Đơn vị"
-          validateStatus={
-            formControlStudent.errors.tenHocVien &&
-            formControlStudent.touched.tenHocVien
-              ? "error"
-              : ""
-          }
-          help={
-            formControlStudent.errors.tenHocVien &&
-            formControlStudent.touched.tenHocVien
-              ? formControlStudent.errors.tenHocVien
-              : null
-          }
-        >
-          <TreeSelect
-            style={{ width: "100%" }}
-            value={formControlStudent.values.donViId.toString()}
-            dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
-            treeData={companiesState.companiesTree.get()}
-            placeholder="Chọn đơn vị"
-            treeDefaultExpandAll
-            onChange={changeCompany}
-          />
-        </Form.Item>
-
         <Row gutter={[12, 12]}>
           <Col span={12}>
             <Form.Item name="capBacId" label="Cấp bậc">
+              <div style={{ display: "none" }}>
+                {formControlStudent.values.capBacId}
+              </div>
               <Select
                 placeholder="Chọn cấp bậc"
                 onChange={handleChangeCapBac}
-                value={formControlStudent.values.capBacId.toString()}
+                defaultValue={formControlStudent.values.capBacId}
+                value={formControlStudent.values.capBacId}
                 allowClear
               >
                 {commonState.value.capBacs.map((item: TypeCapBac) => (
@@ -204,10 +164,14 @@ const ModalControlStudent: FC<Props> = ({
           </Col>
           <Col span={12}>
             <Form.Item name="chucVuId" label="Chức vụ">
+              <div style={{ display: "none" }}>
+                {formControlStudent.values.chucVuId}
+              </div>
               <Select
                 placeholder="Chọn chức vụ"
                 onChange={handleChangeChucVu}
-                value={formControlStudent.values.chucVuId.toString()}
+                defaultValue={formControlStudent.values.chucVuId}
+                value={formControlStudent.values.chucVuId}
                 allowClear
               >
                 {commonState.value.chucVus.map((item: TypeChucVu) => (
@@ -223,10 +187,21 @@ const ModalControlStudent: FC<Props> = ({
         <Row gutter={[12, 12]}>
           <Col span={12}>
             <Form.Item label="Ngày sinh" name="ngaySinh">
+              <div style={{ display: "none" }}>
+                {formControlStudent.values.ngaySinh}
+              </div>
               <DatePicker
                 showTime={{ showSecond: false }}
                 format="DD/MM/YYYY"
-                value={moment(formControlStudent.values.ngaySinh, "DD/MM/YYYY")}
+                value={
+                  JSON.parse(
+                    JSON.stringify(formControlStudent.values.ngaySinh)
+                  ) &&
+                  moment(
+                    formControlStudent.values.ngaySinh,
+                    "YYYY-MM-DDTHH:mm:ss.SSSZ"
+                  )
+                }
                 onChange={handleNgaySinh}
               />
             </Form.Item>
@@ -237,14 +212,21 @@ const ModalControlStudent: FC<Props> = ({
               label="Giới tính"
               rules={[{ required: true }]}
             >
+              <div style={{ display: "none" }}>
+                {formControlStudent.values.gioiTinh}
+              </div>
               <Select
                 placeholder="Select a option and change input text above"
                 onChange={handleChangeGioiTinh}
-                value={formControlStudent.values.gioiTinh.toString()}
+                value={
+                  formControlStudent.values.gioiTinh
+                    ? formControlStudent.values.gioiTinh
+                    : null
+                }
                 allowClear
               >
-                <Option value="1">Nam</Option>
-                <Option value="0">Nữ</Option>
+                <Option value={1}>Nam</Option>
+                <Option value={0}>Nữ</Option>
               </Select>
             </Form.Item>
           </Col>

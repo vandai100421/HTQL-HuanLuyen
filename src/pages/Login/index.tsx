@@ -9,6 +9,7 @@ import { login } from "pages/App/store/appSlice";
 import { useNavigate } from "react-router-dom";
 import { DEFAULT } from "routes/route.constant";
 import styles from "pages/Login/Login.module.css";
+import { useHookstate } from "@hookstate/core";
 
 const loginSchema = Yup.object().shape({
   tenNguoiDung: Yup.string().required("Tên đăng nhập không được để trống."),
@@ -17,7 +18,6 @@ const loginSchema = Yup.object().shape({
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   // self state
   const [loginError, setLoginError] = useState<string>("");
 
@@ -32,13 +32,22 @@ const Login = () => {
     onSubmit: async (data) => {
       try {
         const dataRes = await authApi.login(data);
-        window.sessionStorage.setItem("access_token", dataRes.data.data);
-        dispatch(login());
-        navigate(DEFAULT);
+        if (dataRes.data.status === "success") {
+          window.sessionStorage.setItem(
+            "access_token",
+            dataRes.data.data.accessToken
+          );
+          dispatch(login());
+          window.sessionStorage.setItem(
+            "donViId",
+            dataRes.data.data.user.donViId
+          );
+          navigate(DEFAULT);
+        } else {
+          message.error("Tên người dùng hoặc mật khẩu không chính xác.");
+        }
       } catch (error: any) {
-        message.error(
-          "Lỗi đăng nhập! Tên người dùng hoặc mật khẩu không chính xác."
-        );
+        message.error("Lỗi đăng nhập!");
       }
     },
   });

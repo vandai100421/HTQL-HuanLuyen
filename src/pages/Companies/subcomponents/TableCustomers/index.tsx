@@ -6,9 +6,7 @@ import {
   TypeCompanies,
   TypeEditCompanies,
 } from "constants/types/companies.type";
-import { TypeCustomers } from "constants/types/customers.type";
 import companiesStore from "pages/Companies/store";
-import customersStore from "pages/Customers/store";
 import { FC, useMemo } from "react";
 
 type Props = {
@@ -80,9 +78,9 @@ const TableCustomers: FC<Props> = ({
         bordered
         dataSource={companiesState.companies.get()}
         pagination={{
-          // pageSize: companiesState.limit.get(),
-          // current: companiesState.page.get(),
-          // total: companiesState.total.get(),
+          pageSize: companiesState.limit.get(),
+          current: companiesState.page.get(),
+          total: companiesState.total.get(),
           hideOnSinglePage: true,
           onChange: onChangePage,
         }}
