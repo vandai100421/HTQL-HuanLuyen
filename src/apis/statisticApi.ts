@@ -1,36 +1,55 @@
 import { request } from "apis/base";
 
+export type ParamsStatistic = {
+  keHoachId?: number;
+  id?: number;
+};
+
 export const statisticApi = {
-  getTotalCustomers: () => {
-    return request("admin/statistics/customerNumbers", {
+  getChuyenCanByLevelYourself: (params?: ParamsStatistic) => {
+    return request("/ThongKe/GetChuyenCanByLevelYourself", {
       method: "GET",
+      params,
       headers: {
         Authorization:
           "Bearer " + String(window.sessionStorage.getItem("access_token")),
       },
     });
   },
-  getDishesFrequency: () => {
-    return request("admin/statistics/DishesFrequency", {
+  getChuyenCanByLevelLower: (params: ParamsStatistic) => {
+    return request("/ThongKe/GetChuyenCanByLevelLower/" + params.id, {
       method: "GET",
+      params,
       headers: {
         Authorization:
           "Bearer " + String(window.sessionStorage.getItem("access_token")),
       },
     });
   },
-  getTodayRevenue: () => {
-    return request("admin/statistics/todayRevenue", {
+  getKTLevelYourself: (params: ParamsStatistic) => {
+    return request("/ThongKe/GetKTLevelYourself/" + params.id, {
       method: "GET",
+      params,
       headers: {
         Authorization:
           "Bearer " + String(window.sessionStorage.getItem("access_token")),
       },
     });
   },
-  getStaffFrequency: () => {
-    return request("admin/statistics/StaffFrequency", {
+  getKTLevelLower: (params: ParamsStatistic) => {
+    return request("/ThongKe/GetKTLevelLower/" + params.id, {
       method: "GET",
+      params,
+      headers: {
+        Authorization:
+          "Bearer " + String(window.sessionStorage.getItem("access_token")),
+      },
+    });
+  },
+  getKTDVByLevelLower: (params: ParamsStatistic) => {
+    return request("/ThongKe/GetKTDVByLevelLower/" + params.id, {
+      method: "GET",
+      params,
       headers: {
         Authorization:
           "Bearer " + String(window.sessionStorage.getItem("access_token")),
