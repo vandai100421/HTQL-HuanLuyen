@@ -10,7 +10,7 @@ export const store = configureStore({
     appSlice,
   },
   devTools: true,
-  middleware: (getDefaultMiddleware) =>
+  middleware: (getDefaultMiddleware: any) =>
     getDefaultMiddleware().concat(sagaMiddleware),
 });
 

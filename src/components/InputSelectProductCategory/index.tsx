@@ -47,7 +47,7 @@ const InputSelectProductCategory: FC<Props> = ({
 
   const handleGetCategoriesSelected = async () => {
     if (!isEmpty(categoryIds)) {
-      const categories = productCategoriesSelection.filter((category) =>
+      const categories = productCategoriesSelection.filter((category: any) =>
         categoryIds.includes(category.value)
       );
       setCategoriesSelected(categories);

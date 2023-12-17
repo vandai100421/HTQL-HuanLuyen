@@ -40,7 +40,7 @@ const ModalSelectProductCategory: FC<Props> = ({
   ) => {
     // find in local
     const categories = productCategoriesSelection.filter(
-      (category) => category.parent_category_id == parentCategoryId
+      (category: any) => category.parent_category_id == parentCategoryId
     );
     const newCategoriesSelector = [...categoriesSelector];
     newCategoriesSelector.splice(position, 1, categories);

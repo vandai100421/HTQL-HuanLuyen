@@ -21,28 +21,28 @@ export const appSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
-    login: (state) => {
+    login: (state: any) => {
       state.isLogged = true;
     },
-    logout: (state) => {
+    logout: (state: any) => {
       state.isLogged = false;
     },
-    getSelectionProductCategories: (state) => {
+    getSelectionProductCategories: (state: any) => {
       return state;
     },
     getSelectionProductCategoriesSuccess: (
-      state,
+      state: any,
       action: PayloadAction<GetSelectionProductCategoriesSuccessPayload>
     ) => {
       state.productCategoriesSelection =
         action.payload.productCategoriesSelection;
     },
     // get roles
-    getSelectionRoles: (state) => {
+    getSelectionRoles: (state: any) => {
       return state;
     },
     getSelectionRolesSuccess: (
-      state,
+      state: any,
       action: PayloadAction<GetSelectionRolesSuccessPayload>
     ) => {
       state.rolesSelection = action.payload.rolesSelection;
