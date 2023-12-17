@@ -39,18 +39,19 @@ type Props = {
 const BarChart: FC<Props> = ({ data }) => {
   const labels = data.map((item: any) => item.tenKeHoach);
   const chuyenCans = data.map((item: any) => item.chuyenCan);
+  const soBuoiHocs = data.map((item: any) => item.soBuoiHoc);
 
   const datas = {
     labels,
     datasets: [
       {
-        label: "Dataset 1",
+        label: "Có mặt",
         data: chuyenCans,
         backgroundColor: "rgba(255, 99, 132, 0.5)",
       },
       {
-        label: "Dataset 2",
-        data: [1, 2, 3, 4, 5, 6, 7],
+        label: "Tổng số buổi",
+        data: soBuoiHocs,
         backgroundColor: "rgba(53, 162, 235, 0.5)",
       },
     ],

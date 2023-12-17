@@ -42,7 +42,7 @@ type MenuItem = {
   path?: string;
 };
 
-const menus: Array<MenuItem> = [
+let menus: Array<MenuItem> = [
   {
     title: "Dashboard",
     key: "dashboard",
@@ -58,14 +58,14 @@ const menus: Array<MenuItem> = [
         title: "Danh sách người dùng",
         path: USER,
       },
-      {
-        title: "Danh sách nhóm",
-        path: ROLE,
-      },
-      {
-        title: "Danh sách quyền",
-        path: PERMISSION,
-      },
+      // {
+      //   title: "Danh sách nhóm",
+      //   path: ROLE,
+      // },
+      // {
+      //   title: "Danh sách quyền",
+      //   path: PERMISSION,
+      // },
     ],
   },
   {
@@ -88,10 +88,10 @@ const menus: Array<MenuItem> = [
         title: "Danh sách học viên",
         path: STUDENTS,
       },
-      {
-        title: "Kết quả rèn luyện",
-        path: USER,
-      },
+      // {
+      //   title: "Kết quả rèn luyện",
+      //   path: USER,
+      // },
     ],
   },
   {
@@ -156,6 +156,9 @@ const menus: Array<MenuItem> = [
   },
 ];
 
+if (Number(window.sessionStorage.getItem("vaiTro")) === 2) {
+  menus = menus.filter((item) => item.key !== "user");
+}
 const SideBar = () => {
   return (
     <div>

@@ -5,6 +5,7 @@ import statisicStore, { getChuyenCanByLevelLower } from "./store";
 import companiesStore, { fetchCompaniesList } from "pages/Companies/store";
 import { useHookstate } from "@hookstate/core";
 import PieChar from "./subcomponents/PieChar";
+import BarChart from "./subcomponents/Bar";
 
 const { Option } = Select;
 
@@ -109,7 +110,8 @@ const StatisticByDiligence = () => {
             </Row> */}
             <Row>
               {/* <LineChart /> */}
-              <PieChar data={data} />
+              {/* <PieChar data={data} /> */}
+              <BarChart data={data} />
             </Row>
           </>
         )}

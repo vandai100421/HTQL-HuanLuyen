@@ -18,6 +18,8 @@ const Header = () => {
     try {
       dispatch(logout());
       window.sessionStorage.removeItem("access_token");
+      window.sessionStorage.removeItem("donViId");
+      window.sessionStorage.removeItem("vaiTro");
     } catch (error) {
       console.log("Đăng xuất không thành công thành công. Vui lòng thử lại.");
     }
