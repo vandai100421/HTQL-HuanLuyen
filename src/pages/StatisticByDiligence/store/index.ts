@@ -1,48 +1,38 @@
 import { createState } from "@hookstate/core";
 import { message } from "antd";
-import { scheduleApi } from "apis/schedule";
+import { ParamsStatistic, statisticApi } from "apis/statisticApi";
 import { CommonGetAllParams } from "constants/types/common.type";
-import { TypeSchedule } from "constants/types/schedule.type";
 
 type scheduleState = {
-  schedules: Array<TypeSchedule>;
-  limit: number;
-  page: number;
-  total: number;
-  isLoadingGetAllSchedule: boolean;
+  ccData: Array<any>; // chuyên cần
+  isLoading: boolean;
 };
 
 const initialState: scheduleState = {
-  schedules: [],
-  limit: 10,
-  page: 1,
-  total: 0,
-  isLoadingGetAllSchedule: true,
+  ccData: [],
+  isLoading: true,
 };
 
-const scheduleStore = createState(initialState);
+const statisicStore = createState(initialState);
 
-export const getAllSchedule = async (params?: CommonGetAllParams) => {
+export const getChuyenCanByLevelYourself = async (params?: ParamsStatistic) => {
   try {
-    scheduleStore.isLoadingGetAllSchedule.set(true);
+    statisicStore.isLoading.set(true);
     const _params = {
       ...params,
-      page: params?.page ? params.page : scheduleStore.page.get(),
-      limit: params?.limit ? params.limit : scheduleStore.limit.get(),
+      keHoachId: params?.keHoachId ? params.keHoachId : 16,
     };
-    const dataRes = await scheduleApi.getAll(_params);
 
-    scheduleStore.set({
-      schedules: dataRes.data.data,
-      page: dataRes.data.page,
-      total: dataRes.data.total,
-      limit: dataRes.data.limit,
-      isLoadingGetAllSchedule: false,
+    const dataRes = await statisticApi.getChuyenCanByLevelYourself(_params);
+
+    statisicStore.set({
+      ccData: dataRes.data.data,
+      isLoading: false,
     });
   } catch (error) {
-    scheduleStore.isLoadingGetAllSchedule.set(false);
+    statisicStore.isLoading.set(false);
     message.error("Lỗi khi lấy danh sách kế hoạch huấn luyện.");
   }
 };
 
-export default scheduleStore;
+export default statisicStore;
