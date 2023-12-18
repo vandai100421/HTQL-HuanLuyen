@@ -80,12 +80,13 @@ const TableComponent = () => {
       keHoachId: resultPlanState.value.id,
       details: dataResult.current,
     };
-
+    
     if (
       Number(window.sessionStorage.getItem("duocSua")) === 1 ||
       Number(window.sessionStorage.getItem("vaiTro")) === 1
     )
       await resultPlanApi.updateListKQ(data);
+
     getAllResultPlan({ keHoachId: resultPlanState.value.id });
     setSetsetting(!setsetting);
   };
