@@ -207,22 +207,15 @@ const ModalControlStudent: FC<Props> = ({
             </Form.Item>
           </Col>
           <Col span={12}>
-            <Form.Item
-              name="gioiTinh"
-              label="Giới tính"
-              rules={[{ required: true }]}
-            >
+            <Form.Item name="gioiTinh" label="Giới tính">
               <div style={{ display: "none" }}>
                 {formControlStudent.values.gioiTinh}
               </div>
               <Select
                 placeholder="Select a option and change input text above"
                 onChange={handleChangeGioiTinh}
-                value={
-                  formControlStudent.values.gioiTinh
-                    ? formControlStudent.values.gioiTinh
-                    : null
-                }
+                defaultValue={formControlStudent.values.gioiTinh}
+                value={formControlStudent.values.gioiTinh}
                 allowClear
               >
                 <Option value={1}>Nam</Option>

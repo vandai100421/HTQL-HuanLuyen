@@ -141,7 +141,6 @@ const ModalControlCustomers: FC<Props> = ({
           />
         </Form.Item>
         <Form.Item label="Loại đơn vị">
-          {formControl.values.loaiDonViId}
           <Select
             value={formControl.values.loaiDonViId}
             onChange={(value) =>

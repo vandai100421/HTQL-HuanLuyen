@@ -24,45 +24,48 @@ const StatisticByDiligence = () => {
   useEffect(() => {
     fetchCompaniesList();
   }, []);
+  useEffect(() => {
+    const statisticPieChart = () => {
+      let dataRes: any = [];
+      statisticState.value.dvData.forEach((item, index) => {
+        const existingItem = dataRes.find(
+          (p: any) => item.tenKeHoach === p.tenKeHoach
+        );
+        if (existingItem) {
+          dataRes = dataRes.map((item: any) => {
+            if (item.tenKeHoach === existingItem.tenKeHoach) {
+              return {
+                ...item,
+                slKhongDat: item.slKhongDat + existingItem.slKhongDat,
+                slDat: item.slDat + existingItem.slDat,
+                slKha: item.slKha + existingItem.slKha,
+                slGioi: item.slGioi + existingItem.slGioi,
+                slXuatSac: item.slXuatSac + existingItem.slXuatSac,
+                slThamGia: item.slThamGia + existingItem.slThamGia,
+              };
+            }
+            return item;
+          });
+        } else {
+          dataRes.push({
+            tenKeHoach: item.tenKeHoach,
+            slKhongDat: item.slKhongDat,
+            slDat: item.slDat,
+            slKha: item.slKha,
+            slGioi: item.slGioi,
+            slXuatSac: item.slXuatSac,
+            slThamGia: item.slThamGia,
+          });
+        }
+      });
+      return dataRes;
+    };
 
-  const statisticPieChart = () => {
-    let dataRes: any = [];
-    statisticState.value.dvData.forEach((item, index) => {
-      const existingItem = dataRes.find(
-        (p: any) => item.tenKeHoach === p.tenKeHoach
-      );
-      if (existingItem) {
-        dataRes = dataRes.map((item: any) => {
-          if (item.tenKeHoach === existingItem.tenKeHoach) {
-            return {
-              ...item,
-              slKhongDat: item.slKhongDat + existingItem.slKhongDat,
-              slDat: item.slDat + existingItem.slDat,
-              slKha: item.slKha + existingItem.slKha,
-              slGioi: item.slGioi + existingItem.slGioi,
-              slXuatSac: item.slXuatSac + existingItem.slXuatSac,
-              slThamGia: item.slThamGia + existingItem.slThamGia,
-            };
-          }
-          return item;
-        });
-      } else {
-        dataRes.push({
-          tenKeHoach: item.tenKeHoach,
-          slKhongDat: item.slKhongDat,
-          slDat: item.slDat,
-          slKha: item.slKha,
-          slGioi: item.slGioi,
-          slXuatSac: item.slXuatSac,
-          slThamGia: item.slThamGia,
-        });
-      }
-    });
-    return dataRes;
-  };
-  const handleSelectCompany = (value: number) => {
     const result = statisticPieChart();
     setData(result);
+  }, [statisticState]);
+  
+  const handleSelectCompany = (value: number) => {
     setSelectedCompany(value);
   };
 

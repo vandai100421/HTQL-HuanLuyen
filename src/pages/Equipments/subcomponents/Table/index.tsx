@@ -42,10 +42,10 @@ const TableComponent: FC<Props> = ({
       dataIndex: "diaDiem",
       key: "address",
     },
-    {
-      title: "Tên đơn vị",
-      dataIndex: "tenDonVi",
-    },
+    // {
+    //   title: "Tên đơn vị",
+    //   dataIndex: "tenDonVi",
+    // },
     {
       title: "Thao tác",
       render: (_, item: TypeEquipment) => (
@@ -85,7 +85,15 @@ const TableComponent: FC<Props> = ({
     <>
       <Table
         columns={columns}
-        dataSource={equipmentState.equipments.get()}
+        dataSource={
+          Number(window.sessionStorage.getItem("vaiTro")) === 1
+            ? equipmentState.value.equipments
+            : equipmentState.value.equipments.filter(
+                (item) =>
+                  item.donViId ===
+                  Number(window.sessionStorage.getItem("donViId"))
+              )
+        }
         loading={equipmentState.isLoadingGetAllEquipment.get()}
         pagination={{
           pageSize: equipmentState.limit.get(),
