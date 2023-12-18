@@ -69,7 +69,7 @@ const TableComponent: FC<Props> = ({
                 icon={<DeleteOutlined />}
               />
             </Popconfirm>
-            <Popconfirm
+            {/* <Popconfirm
               title="Bạn muốn đổi mật khẩu?"
               onConfirm={() => console.log(item.id)}
             >
@@ -79,7 +79,7 @@ const TableComponent: FC<Props> = ({
                 danger
                 icon={<ExclamationOutlined style={{ color: "blue" }} />}
               />
-            </Popconfirm>
+            </Popconfirm> */}
           </Space>
         </>
       ),

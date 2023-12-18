@@ -24,41 +24,44 @@ const StatisticByDiligence = () => {
         : Number(window.sessionStorage.getItem("donViId")),
     };
     getChuyenCanByLevelLower(param);
-    const result = statisticBarChart();
-    setData(result);
   }, [selectedCompany]);
 
   useEffect(() => {
     fetchCompaniesList();
   }, []);
 
-  const statisticBarChart = () => {
-    let dataRes: any = [];
-    statisticState.value.ccData.forEach((item, index) => {
-      const existingItem = dataRes.find(
-        (p: any) => item.tenKeHoach === p.tenKeHoach
-      );
-      if (existingItem) {
-        dataRes = dataRes.map((item: any) => {
-          if (item.tenKeHoach === existingItem.tenKeHoach) {
-            return {
-              ...item,
-              chuyenCan: item.chuyenCan + existingItem.chuyenCan,
-              soBuoiHoc: item.soBuoiHoc + existingItem.soBuoiHoc,
-            };
-          }
-          return item;
-        });
-      } else {
-        dataRes.push({
-          tenKeHoach: item.tenKeHoach,
-          chuyenCan: item.chuyenCan,
-          soBuoiHoc: item.soBuoiHoc,
-        });
-      }
-    });
-    return dataRes;
-  };
+  useEffect(() => {
+    const statisticBarChart = () => {
+      let dataRes: any = [];
+      statisticState.value.ccData.forEach((item, index) => {
+        const existingItem = dataRes.find(
+          (p: any) => item.tenKeHoach === p.tenKeHoach
+        );
+        if (existingItem) {
+          dataRes = dataRes.map((item: any) => {
+            if (item.tenKeHoach === existingItem.tenKeHoach) {
+              return {
+                ...item,
+                chuyenCan: item.chuyenCan + existingItem.chuyenCan,
+                soBuoiHoc: item.soBuoiHoc + existingItem.soBuoiHoc,
+              };
+            }
+            return item;
+          });
+        } else {
+          dataRes.push({
+            tenKeHoach: item.tenKeHoach,
+            chuyenCan: item.chuyenCan,
+            soBuoiHoc: item.soBuoiHoc,
+          });
+        }
+      });
+      return dataRes;
+    };
+    const result = statisticBarChart();
+    setData(result);
+  }, [statisticState]);
+
   const handleSelectCompany = (value: number) => {
     setSelectedCompany(value);
   };

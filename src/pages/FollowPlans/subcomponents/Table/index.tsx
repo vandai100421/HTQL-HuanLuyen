@@ -138,7 +138,11 @@ const TableComponent = () => {
       keHoachId: followPlanState.id.get(),
       details: dataDiemDanh.current,
     };
-    await followPlanApi.updateListDD(data);
+    if (
+      Number(window.sessionStorage.getItem("duocSua")) === 1 ||
+      Number(window.sessionStorage.getItem("vaiTro")) === 1
+    )
+      await followPlanApi.updateListDD(data);
     getAllFollowPlan();
   };
 

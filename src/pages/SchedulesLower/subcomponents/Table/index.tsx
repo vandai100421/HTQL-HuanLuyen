@@ -42,6 +42,7 @@ const TableComponent: FC<Props> = ({
   };
 
   const handleDetailFollowPlan = (id: number) => {
+    window.sessionStorage.setItem("duocSua", "0");
     followPlanState.merge({ id: id });
     navigate(FOLLOWPLANS);
   };
@@ -57,6 +58,7 @@ const TableComponent: FC<Props> = ({
     }
   };
   const handleDetailResultPlan = (id: number) => {
+    window.sessionStorage.setItem("duocSua", "0");
     resultPlanState.merge({ id: id });
     navigate(RESULT_PLAN);
   };

@@ -38,11 +38,15 @@ type Props = {
 
 const BarChart: FC<Props> = ({ data }) => {
   const labels = data.map((item: any) => item.tenKeHoach);
-  const slKhongDat = data.map((item: any) => item.slKhongDat);
-  const slDat = data.map((item: any) => item.slDat);
-  const slKha = data.map((item: any) => item.slKha);
-  const slGioi = data.map((item: any) => item.slGioi);
-  const slXuatSac = data.map((item: any) => item.slXuatSac);
+  const slKhongDat = data.map(
+    (item: any) => (item.slKhongDat / item.slThamGia) * 100
+  );
+  const slDat = data.map((item: any) => (item.slDat / item.slThamGia) * 100);
+  const slKha = data.map((item: any) => (item.slKha / item.slThamGia) * 100);
+  const slGioi = data.map((item: any) => (item.slGioi / item.slThamGia) * 100);
+  const slXuatSac = data.map(
+    (item: any) => (item.slXuatSac / item.slThamGia) * 100
+  );
 
   const datas = {
     labels,
